@@ -16,43 +16,43 @@ export class ModelFactory3D {
 
         // Reusable PBR Materials
         this.materials = {
-            darkSteel: new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.85, roughness: 0.25 }),
-            lightSteel: new THREE.MeshStandardMaterial({ color: 0x64748B, metalness: 0.8, roughness: 0.3 }),
-            industrialYellow: new THREE.MeshStandardMaterial({ color: 0xF59E0B, metalness: 0.4, roughness: 0.4 }),
-            industrialCyan: new THREE.MeshStandardMaterial({ color: 0x0EA5E9, metalness: 0.4, roughness: 0.4 }),
-            brightCyan: new THREE.MeshStandardMaterial({ color: 0x22D3EE, emissive: 0x0EA5E9, emissiveIntensity: 0.6 }),
-            neonPurple: new THREE.MeshStandardMaterial({ color: 0xA855F7, emissive: 0x7E22CE, emissiveIntensity: 0.8 }),
+            darkSteel: new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.35, roughness: 0.45 }),
+            lightSteel: new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.35, roughness: 0.4 }),
+            industrialYellow: new THREE.MeshStandardMaterial({ color: 0xF59E0B, metalness: 0.15, roughness: 0.35 }),
+            industrialCyan: new THREE.MeshStandardMaterial({ color: 0x0EA5E9, metalness: 0.2, roughness: 0.3 }),
+            brightCyan: new THREE.MeshStandardMaterial({ color: 0x22D3EE, emissive: 0x0EA5E9, emissiveIntensity: 1.5 }),
+            neonPurple: new THREE.MeshStandardMaterial({ color: 0xA855F7, emissive: 0x7E22CE, emissiveIntensity: 1.5 }),
             conveyorBelt: new THREE.MeshStandardMaterial({
                 map: this.standardBeltTexture,
-                roughness: 0.75,
+                roughness: 0.5,
                 metalness: 0.15
             }),
             conveyorFast: new THREE.MeshStandardMaterial({
                 map: this.fastBeltTexture,
-                roughness: 0.65,
-                metalness: 0.25
+                roughness: 0.5,
+                metalness: 0.15
             }),
-            furnaceBody: new THREE.MeshStandardMaterial({ color: 0x292524, roughness: 0.7, metalness: 0.3 }),
-            moltenCore: new THREE.MeshStandardMaterial({ color: 0xF97316, emissive: 0xEA580C, emissiveIntensity: 1.3 }),
-            solarCell: new THREE.MeshStandardMaterial({ color: 0x0284C7, metalness: 0.9, roughness: 0.15 }),
-            copper: new THREE.MeshStandardMaterial({ color: 0xEA580C, metalness: 0.85, roughness: 0.3 }),
-            iron: new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.85, roughness: 0.25 }),
-            pcbGreen: new THREE.MeshStandardMaterial({ color: 0x15803D, roughness: 0.3, metalness: 0.2 }),
-            goldPin: new THREE.MeshStandardMaterial({ color: 0xFBBF24, metalness: 0.9, roughness: 0.2 }),
-            glassScience: new THREE.MeshStandardMaterial({ color: 0x38BDF8, emissive: 0x0284C7, emissiveIntensity: 0.7, transparent: true, opacity: 0.85 }),
-            hazardStripe: new THREE.MeshStandardMaterial({ color: 0xFACC15, roughness: 0.5 }),
-            plasticWhite: new THREE.MeshStandardMaterial({ color: 0xF1F5F9, roughness: 0.2, metalness: 0.1 }),
-            batteryYellow: new THREE.MeshStandardMaterial({ color: 0xEAB308, metalness: 0.75, roughness: 0.25 }),
-            chemicalFluid: new THREE.MeshStandardMaterial({ color: 0x06B6D4, emissive: 0x0891B2, emissiveIntensity: 1.4, transparent: true, opacity: 0.85 }),
-            glassTube: new THREE.MeshStandardMaterial({ color: 0xBAE6FD, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.45 }),
-            floodlight: new THREE.MeshStandardMaterial({ color: 0xFEF08A, emissive: 0xFDE047, emissiveIntensity: 2.2 }),
-            nuclearCore: new THREE.MeshStandardMaterial({ color: 0x84CC16, emissive: 0x65A30D, emissiveIntensity: 1.8 }),
-            titanium: new THREE.MeshStandardMaterial({ color: 0x94A3B8, metalness: 0.95, roughness: 0.15 }),
-            uranium: new THREE.MeshStandardMaterial({ color: 0xA3E635, emissive: 0x65A30D, emissiveIntensity: 1.5 }),
-            quantumPink: new THREE.MeshStandardMaterial({ color: 0xF43F5E, emissive: 0xE11D48, emissiveIntensity: 1.6 }),
-            crimsonSteel: new THREE.MeshStandardMaterial({ color: 0xDC2626, metalness: 0.7, roughness: 0.35 }),
-            biomassGreen: new THREE.MeshStandardMaterial({ color: 0x16A34A, roughness: 0.6, metalness: 0.1 }),
-            accumulatorBlue: new THREE.MeshStandardMaterial({ color: 0x2563EB, emissive: 0x1D4ED8, emissiveIntensity: 0.8 })
+            furnaceBody: new THREE.MeshStandardMaterial({ color: 0xC2410C, roughness: 0.45, metalness: 0.25 }),
+            moltenCore: new THREE.MeshStandardMaterial({ color: 0xFF5500, emissive: 0xEA580C, emissiveIntensity: 2.5 }),
+            solarCell: new THREE.MeshStandardMaterial({ color: 0x0284C7, metalness: 0.5, roughness: 0.2 }),
+            copper: new THREE.MeshStandardMaterial({ color: 0xEA580C, metalness: 0.6, roughness: 0.3 }),
+            iron: new THREE.MeshStandardMaterial({ color: 0xE2E8F0, metalness: 0.55, roughness: 0.3 }),
+            pcbGreen: new THREE.MeshStandardMaterial({ color: 0x10B981, roughness: 0.3, metalness: 0.2 }),
+            goldPin: new THREE.MeshStandardMaterial({ color: 0xFBBF24, metalness: 0.7, roughness: 0.2 }),
+            glassScience: new THREE.MeshStandardMaterial({ color: 0x38BDF8, emissive: 0x0284C7, emissiveIntensity: 1.2, transparent: true, opacity: 0.85 }),
+            hazardStripe: new THREE.MeshStandardMaterial({ color: 0xFACC15, roughness: 0.4 }),
+            plasticWhite: new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.25, metalness: 0.05 }),
+            batteryYellow: new THREE.MeshStandardMaterial({ color: 0xEAB308, metalness: 0.4, roughness: 0.3 }),
+            chemicalFluid: new THREE.MeshStandardMaterial({ color: 0x06B6D4, emissive: 0x0891B2, emissiveIntensity: 2.0, transparent: true, opacity: 0.88 }),
+            glassTube: new THREE.MeshStandardMaterial({ color: 0xBAE6FD, roughness: 0.1, metalness: 0.05, transparent: true, opacity: 0.45 }),
+            floodlight: new THREE.MeshStandardMaterial({ color: 0xFEF08A, emissive: 0xFDE047, emissiveIntensity: 2.5 }),
+            nuclearCore: new THREE.MeshStandardMaterial({ color: 0x84CC16, emissive: 0x65A30D, emissiveIntensity: 2.8 }),
+            titanium: new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.7, roughness: 0.25 }),
+            uranium: new THREE.MeshStandardMaterial({ color: 0xA3E635, emissive: 0x65A30D, emissiveIntensity: 2.2 }),
+            quantumPink: new THREE.MeshStandardMaterial({ color: 0xF43F5E, emissive: 0xE11D48, emissiveIntensity: 2.2 }),
+            crimsonSteel: new THREE.MeshStandardMaterial({ color: 0xEF4444, metalness: 0.35, roughness: 0.35 }),
+            biomassGreen: new THREE.MeshStandardMaterial({ color: 0x22C55E, roughness: 0.4, metalness: 0.1 }),
+            accumulatorBlue: new THREE.MeshStandardMaterial({ color: 0x3B82F6, emissive: 0x2563EB, emissiveIntensity: 2.0 })
         };
 
         // Open-Source 3D GLB Loader & Model Cache (Kenney CC0 Assets)
@@ -106,6 +106,9 @@ export class ModelFactory3D {
                         if (node.isMesh) {
                             node.castShadow = true;
                             node.receiveShadow = true;
+                            if (node.material && node.material.map) {
+                                node.material.map.colorSpace = THREE.SRGBColorSpace;
+                            }
                         }
                     });
                     this.modelsGLB.set(key, scene);
@@ -131,10 +134,91 @@ export class ModelFactory3D {
         });
     }
 
-    cloneModel(key) {
+    cloneModel(key, options = {}) {
         if (!this.modelsGLB.has(key)) return null;
         const original = this.modelsGLB.get(key);
-        return original.clone(true);
+        const cloned = original.clone(true);
+
+        // Standard stylized PBR defaults: 0xFFFFFF preserves Kenney colormap.png vibrant multi-tone colors!
+        const defaultPalettes = {
+            'conveyor': { primaryColor: 0xFFFFFF, metalness: 0.1, roughness: 0.45 },
+            'conveyor_stripe': { primaryColor: 0xFFFFFF, metalness: 0.1, roughness: 0.45 },
+            'conveyor_cross': { primaryColor: 0xFFFFFF, metalness: 0.1, roughness: 0.45 },
+            'conveyor_junction': { primaryColor: 0xFFFFFF, metalness: 0.1, roughness: 0.45 },
+            'robot_arm_a': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'robot_arm_b': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'machine': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'machine_fortified': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'machine_bed': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'machine_pipe': { primaryColor: 0xFFFFFF, metalness: 0.2, roughness: 0.35 },
+            'solar_panel': { primaryColor: 0xFFFFFF, metalness: 0.25, roughness: 0.3 },
+            'windmill': { primaryColor: 0xFFFFFF, metalness: 0.1, roughness: 0.4 },
+            'chimney_large': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'chimney_medium': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'tank_large': { primaryColor: 0xFFFFFF, metalness: 0.18, roughness: 0.35 },
+            'tank_small': { primaryColor: 0xFFFFFF, metalness: 0.18, roughness: 0.35 },
+            'building_a': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'building_b': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'building_c': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'building_f': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'hopper_round': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'hopper_square': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'scanner_low': { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 },
+            'piston_round': { primaryColor: 0xFFFFFF, metalness: 0.25, roughness: 0.35 }
+        };
+
+        const config = Object.assign({}, defaultPalettes[key] || { primaryColor: 0xFFFFFF, metalness: 0.15, roughness: 0.4 }, options);
+
+        cloned.traverse((node) => {
+            if (node.isMesh) {
+                node.castShadow = true;
+                node.receiveShadow = true;
+                if (node.material) {
+                    node.material = node.material.clone();
+
+                    const nodeName = (node.name || '').toLowerCase();
+                    let chosenColor = null;
+
+                    if (config.subMeshColors) {
+                        for (const [pattern, col] of Object.entries(config.subMeshColors)) {
+                            if (nodeName.includes(pattern.toLowerCase())) {
+                                chosenColor = col;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (chosenColor === null && config.primaryColor !== undefined) {
+                        chosenColor = config.primaryColor;
+                    }
+
+                    // For textured models (Kenney colormap), default to 0xFFFFFF so texture colors are never crushed
+                    if (node.material.map && chosenColor === null) {
+                        chosenColor = 0xFFFFFF;
+                    }
+
+                    if (chosenColor !== null) {
+                        node.material.color.set(chosenColor);
+                    }
+
+                    if (config.metalness !== undefined) {
+                        node.material.metalness = config.metalness;
+                    } else if (node.material.map) {
+                        node.material.metalness = Math.min(node.material.metalness || 0, 0.2);
+                    }
+
+                    if (config.roughness !== undefined) {
+                        node.material.roughness = config.roughness;
+                    }
+                    if (config.emissive !== undefined) {
+                        node.material.emissive.set(config.emissive);
+                        node.material.emissiveIntensity = config.emissiveIntensity || 1.0;
+                    }
+                }
+            }
+        });
+
+        return cloned;
     }
 
     initThumbnailRenderer() {
@@ -151,23 +235,24 @@ export class ModelFactory3D {
         this.thumbRenderer.setSize(120, 120);
         this.thumbRenderer.setPixelRatio(1);
         this.thumbRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.thumbRenderer.toneMappingExposure = 1.35;
+        this.thumbRenderer.toneMappingExposure = 1.15;
 
         this.thumbScene = new THREE.Scene();
         
-        const amb = new THREE.AmbientLight(0xFFFFFF, 1.4);
+        // Bright, balanced 3-point studio lighting with vibrant fill & rim
+        const amb = new THREE.AmbientLight(0xFFFFFF, 0.9);
         this.thumbScene.add(amb);
 
-        const keyLight = new THREE.DirectionalLight(0xFDE047, 2.5);
-        keyLight.position.set(5, 9, 6);
+        const keyLight = new THREE.DirectionalLight(0xFFFBEB, 1.4);
+        keyLight.position.set(5, 8, 6);
         this.thumbScene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0x38BDF8, 1.6);
+        const fillLight = new THREE.DirectionalLight(0x38BDF8, 0.85);
         fillLight.position.set(-6, 4, -5);
         this.thumbScene.add(fillLight);
 
-        const topRim = new THREE.DirectionalLight(0xFFFFFF, 1.1);
-        topRim.position.set(0, 10, 0);
+        const topRim = new THREE.DirectionalLight(0xFACC15, 0.95);
+        topRim.position.set(0, 10, 2);
         this.thumbScene.add(topRim);
 
         this.thumbCamera = new THREE.PerspectiveCamera(34, 1, 0.2, 50);
@@ -200,17 +285,19 @@ export class ModelFactory3D {
         const bbox = new THREE.Box3().setFromObject(mesh);
         const center = bbox.getCenter(new THREE.Vector3());
         const bsize = bbox.getSize(new THREE.Vector3());
-        const maxDim = Math.max(bsize.x, bsize.y, bsize.z, 1.2);
+        const maxDim = Math.max(bsize.x, bsize.y, bsize.z, 1.0);
 
         mesh.position.sub(center);
 
-        const dist = maxDim * 2.15;
-        this.thumbCamera.position.set(dist * 0.92, dist * 0.85, dist * 0.92);
+        const dist = maxDim * 2.05;
+        this.thumbCamera.position.set(dist * 0.92, dist * 0.82, dist * 0.92);
         this.thumbCamera.lookAt(0, 0, 0);
 
         this.thumbRenderer.render(this.thumbScene, this.thumbCamera);
         const dataUrl = this.thumbRenderer.domElement.toDataURL('image/png');
-        this.thumbnails.set(type, dataUrl);
+        if (this.modelsLoaded) {
+            this.thumbnails.set(type, dataUrl);
+        }
         return dataUrl;
     }
 
@@ -395,17 +482,22 @@ export class ModelFactory3D {
         const ts = this.tileSize;
         const beltMat = isFast ? this.materials.conveyorFast : this.materials.conveyorBelt;
 
-        // Open-Source Kenney 3D Model Integration
-        const glb = this.cloneModel(isFast ? 'conveyor_stripe' : 'conveyor');
+        // Open-Source Kenney 3D Model Integration with rich industrial styling
+        const glb = this.cloneModel(isFast ? 'conveyor_stripe' : 'conveyor', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+
         if (glb) {
-            glb.scale.set(ts * 0.96, ts * 0.96, ts * 0.96);
+            glb.scale.set(ts * 0.94, 0.38, ts * 0.94);
             glb.position.set(0, 0, 0);
             group.add(glb);
 
-            // Animated surface overlay
-            const bedGeom = new THREE.BoxGeometry(ts * 0.58, 0.04, ts * 0.98);
+            // High-contrast animated directional belt surface overlay
+            const bedGeom = new THREE.BoxGeometry(ts * 0.62, 0.03, ts * 0.98);
             const bedMesh = new THREE.Mesh(bedGeom, beltMat);
-            bedMesh.position.y = 0.28;
+            bedMesh.position.y = 0.155;
             group.add(bedMesh);
             return group;
         }
@@ -420,12 +512,12 @@ export class ModelFactory3D {
 
         // Side Rails
         const railGeom = new THREE.BoxGeometry(0.1, 0.22, ts * 0.98);
-        const leftRail = new THREE.Mesh(railGeom, this.materials.darkSteel);
+        const leftRail = new THREE.Mesh(railGeom, isFast ? this.materials.industrialCyan : this.materials.darkSteel);
         leftRail.position.set(-ts * 0.44, 0.11, 0);
         leftRail.castShadow = true;
         group.add(leftRail);
 
-        const rightRail = new THREE.Mesh(railGeom, this.materials.darkSteel);
+        const rightRail = new THREE.Mesh(railGeom, isFast ? this.materials.industrialCyan : this.materials.darkSteel);
         rightRail.position.set(ts * 0.44, 0.11, 0);
         rightRail.castShadow = true;
         group.add(rightRail);
@@ -447,21 +539,25 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        const glb = this.cloneModel('conveyor_cross');
+        const glb = this.cloneModel('conveyor_cross', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
         if (glb) {
-            glb.scale.set(ts * 0.92, ts * 0.92, ts * 0.92);
+            glb.scale.set(ts * 0.92, 0.42, ts * 0.92);
             group.add(glb);
 
             const arch = new THREE.Mesh(
-                new THREE.BoxGeometry(ts * 0.72, 0.4, 0.14),
-                this.materials.industrialYellow
+                new THREE.BoxGeometry(ts * 0.72, 0.35, 0.14),
+                this.materials.hazardStripe
             );
-            arch.position.set(0, 0.55, 0);
+            arch.position.set(0, 0.38, 0);
             arch.castShadow = true;
             group.add(arch);
 
             const led = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), this.materials.neonPurple);
-            led.position.set(0, 0.8, 0);
+            led.position.set(0, 0.6, 0);
             group.add(led);
             return group;
         }
@@ -497,16 +593,20 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        const glb = this.cloneModel('conveyor_junction');
+        const glb = this.cloneModel('conveyor_junction', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
         if (glb) {
-            glb.scale.set(ts * 0.92, ts * 0.92, ts * 0.92);
+            glb.scale.set(ts * 0.92, 0.42, ts * 0.92);
             group.add(glb);
 
             const arch = new THREE.Mesh(
-                new THREE.BoxGeometry(ts * 0.72, 0.4, 0.14),
-                this.materials.industrialCyan
+                new THREE.BoxGeometry(ts * 0.72, 0.35, 0.14),
+                this.materials.industrialYellow
             );
-            arch.position.set(0, 0.55, 0);
+            arch.position.set(0, 0.38, 0);
             arch.castShadow = true;
             group.add(arch);
             return group;
@@ -554,6 +654,10 @@ export class ModelFactory3D {
         hood.position.set(0, 0.55, -0.2);
         group.add(hood);
 
+        const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), this.materials.brightCyan);
+        beacon.position.set(0, 0.65, -0.2);
+        group.add(beacon);
+
         return group;
     }
 
@@ -562,8 +666,49 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        // Heavy Base Legs
-        const legGeom = new THREE.BoxGeometry(0.16, 0.5, 0.16);
+        const machineGlb = this.cloneModel('machine', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+
+        if (machineGlb) {
+            machineGlb.scale.set(ts * 0.52, ts * 0.52, ts * 0.52);
+            machineGlb.position.set(0, 0.25, 0);
+            group.add(machineGlb);
+
+            // Helical Auger Drill Bit (Animated rotating auger under the machine)
+            const drillAuger = new THREE.Mesh(
+                new THREE.ConeGeometry(0.3, 0.72, 8),
+                this.materials.titanium
+            );
+            drillAuger.rotateX(Math.PI);
+            drillAuger.position.y = 0.22;
+            drillAuger.name = 'drillAuger';
+            drillAuger.castShadow = true;
+            group.add(drillAuger);
+
+            // High-vis Warning Amber Beacon on summit
+            const beacon = new THREE.Mesh(
+                new THREE.SphereGeometry(0.12, 8, 8),
+                this.materials.industrialYellow
+            );
+            beacon.position.set(0, 1.45, 0);
+            group.add(beacon);
+
+            // Hazard Warning Frame Base
+            const baseTrim = new THREE.Mesh(
+                new THREE.BoxGeometry(ts * 0.88, 0.08, ts * 0.88),
+                this.materials.hazardStripe
+            );
+            baseTrim.position.y = 0.04;
+            group.add(baseTrim);
+
+            return group;
+        }
+
+        // Heavy Base Legs Fallback
+        const legGeom = new THREE.BoxGeometry(0.18, 0.5, 0.18);
         for (let x of [-0.35, 0.35]) {
             for (let z of [-0.35, 0.35]) {
                 const leg = new THREE.Mesh(legGeom, this.materials.darkSteel);
@@ -573,7 +718,7 @@ export class ModelFactory3D {
             }
         }
 
-        // Platform
+        // Heavy Platform
         const platform = new THREE.Mesh(
             new THREE.BoxGeometry(ts * 0.88, 0.22, ts * 0.88),
             this.materials.industrialYellow
@@ -581,6 +726,14 @@ export class ModelFactory3D {
         platform.position.y = 0.55;
         platform.castShadow = true;
         group.add(platform);
+
+        // Hazard warning trim
+        const trim = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.9, 0.06, ts * 0.9),
+            this.materials.hazardStripe
+        );
+        trim.position.y = 0.67;
+        group.add(trim);
 
         // Motor Housing
         const motor = new THREE.Mesh(
@@ -593,8 +746,8 @@ export class ModelFactory3D {
 
         // Helical Auger Drill Bit (Animated)
         const drillAuger = new THREE.Mesh(
-            new THREE.ConeGeometry(0.28, 0.7, 8),
-            this.materials.lightSteel
+            new THREE.ConeGeometry(0.32, 0.75, 8),
+            this.materials.titanium
         );
         drillAuger.rotateX(Math.PI);
         drillAuger.position.y = 0.25;
@@ -609,8 +762,16 @@ export class ModelFactory3D {
     buildSmelter() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
-        const machineGlb = this.cloneModel('machine');
-        const chimneyGlb = this.cloneModel('chimney_large');
+        const machineGlb = this.cloneModel('machine', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const chimneyGlb = this.cloneModel('chimney_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
 
         if (machineGlb) {
             machineGlb.scale.set(size * 0.55, size * 0.55, size * 0.55);
@@ -624,12 +785,17 @@ export class ModelFactory3D {
             }
 
             const hearth = new THREE.Mesh(
-                new THREE.BoxGeometry(size * 0.4, 0.28, 0.18),
+                new THREE.BoxGeometry(size * 0.42, 0.32, 0.22),
                 this.materials.moltenCore
             );
             hearth.position.set(0, 0.38, size * 0.35);
             hearth.name = 'moltenHearth';
             group.add(hearth);
+
+            const fireLight = new THREE.PointLight(0xF97316, 1.8, 8, 2.0);
+            fireLight.position.set(0, 0.45, size * 0.38);
+            group.add(fireLight);
+
             return group;
         }
 
@@ -654,12 +820,12 @@ export class ModelFactory3D {
 
         // Twin Smokestacks
         const chimneyGeom = new THREE.CylinderGeometry(0.2, 0.26, 1.4, 10);
-        const c1 = new THREE.Mesh(chimneyGeom, this.materials.darkSteel);
+        const c1 = new THREE.Mesh(chimneyGeom, this.materials.copper);
         c1.position.set(-size * 0.25, 1.6, -size * 0.22);
         c1.castShadow = true;
         group.add(c1);
 
-        const c2 = new THREE.Mesh(chimneyGeom, this.materials.darkSteel);
+        const c2 = new THREE.Mesh(chimneyGeom, this.materials.copper);
         c2.position.set(size * 0.25, 1.6, -size * 0.22);
         c2.castShadow = true;
         group.add(c2);
@@ -671,8 +837,16 @@ export class ModelFactory3D {
     buildAssembler() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
-        const bedGlb = this.cloneModel('machine_bed');
-        const armGlb = this.cloneModel('robot_arm_b');
+        const bedGlb = this.cloneModel('machine_bed', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const armGlb = this.cloneModel('robot_arm_b', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
 
         if (bedGlb) {
             bedGlb.scale.set(size * 0.55, size * 0.55, size * 0.55);
@@ -684,6 +858,14 @@ export class ModelFactory3D {
                 armGlb.name = 'robotArm';
                 group.add(armGlb);
             }
+
+            const beacon = new THREE.Mesh(
+                new THREE.SphereGeometry(0.14, 8, 8),
+                this.materials.neonPurple
+            );
+            beacon.position.set(size * 0.35, 1.2, size * 0.35);
+            group.add(beacon);
+
             return group;
         }
 
@@ -733,8 +915,16 @@ export class ModelFactory3D {
     buildCoalGenerator() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
-        const buildingGlb = this.cloneModel('building_a');
-        const chimneyGlb = this.cloneModel('chimney_large');
+        const buildingGlb = this.cloneModel('building_a', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const chimneyGlb = this.cloneModel('chimney_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
 
         if (buildingGlb) {
             buildingGlb.scale.set(size * 0.48, size * 0.48, size * 0.48);
@@ -745,6 +935,14 @@ export class ModelFactory3D {
                 chimneyGlb.position.set(size * 0.22, 1.0, -size * 0.22);
                 group.add(chimneyGlb);
             }
+
+            const hopper = new THREE.Mesh(
+                new THREE.BoxGeometry(size * 0.5, 0.5, size * 0.35),
+                this.materials.industrialYellow
+            );
+            hopper.position.set(0, 0.4, size * 0.28);
+            group.add(hopper);
+
             return group;
         }
 
@@ -782,7 +980,11 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
 
-        const glb = this.cloneModel('solar_panel');
+        const glb = this.cloneModel('solar_panel', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.25,
+            roughness: 0.3
+        });
         if (glb) {
             glb.scale.set(size * 0.46, size * 0.46, size * 0.46);
             glb.position.set(0, 0, 0);
@@ -859,11 +1061,25 @@ export class ModelFactory3D {
     buildStorageSilo() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
-        const tankGlb = this.cloneModel('tank_large');
+        const tankGlb = this.cloneModel('tank_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.18,
+            roughness: 0.35
+        });
 
         if (tankGlb) {
             tankGlb.scale.set(size * 0.58, size * 0.58, size * 0.58);
             group.add(tankGlb);
+
+            // Safety yellow hazard ring & ladder accent
+            const band = new THREE.Mesh(
+                new THREE.TorusGeometry(size * 0.38, 0.05, 6, 24),
+                this.materials.industrialYellow
+            );
+            band.rotation.x = Math.PI / 2;
+            band.position.y = 1.4;
+            group.add(band);
+
             return group;
         }
 
@@ -890,7 +1106,11 @@ export class ModelFactory3D {
     buildResearchLab() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
-        const buildingGlb = this.cloneModel('building_c');
+        const buildingGlb = this.cloneModel('building_c', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
 
         if (buildingGlb) {
             buildingGlb.scale.set(size * 0.52, size * 0.52, size * 0.52);
@@ -905,6 +1125,11 @@ export class ModelFactory3D {
             ring2.position.y = 2.4;
             ring2.name = 'orbitRing2';
             group.add(ring2);
+
+            const orb = new THREE.Mesh(new THREE.SphereGeometry(size * 0.16, 16, 16), this.materials.brightCyan);
+            orb.position.y = 2.4;
+            group.add(orb);
+
             return group;
         }
 
@@ -1090,7 +1315,11 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        const armGlb = this.cloneModel(isFast ? 'robot_arm_b' : 'robot_arm_a');
+        const armGlb = this.cloneModel(isFast ? 'robot_arm_b' : 'robot_arm_a', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
         if (armGlb) {
             const base = new THREE.Mesh(
                 new THREE.CylinderGeometry(ts * 0.36, ts * 0.44, 0.22, 16),
@@ -1116,6 +1345,13 @@ export class ModelFactory3D {
             armGlb.scale.set(ts * 0.65, ts * 0.65, ts * 0.65);
             armGlb.position.set(0, 0, 0);
             armGroup.add(armGlb);
+
+            const statusBeacon = new THREE.Mesh(
+                new THREE.SphereGeometry(0.08, 8, 8),
+                isFast ? this.materials.brightCyan : this.materials.hazardStripe
+            );
+            statusBeacon.position.set(0, 0.35, 0.4);
+            armGroup.add(statusBeacon);
 
             const clawItem = new THREE.Group();
             clawItem.name = 'clawItem';
@@ -1235,8 +1471,16 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
 
-        const tankGlb = this.cloneModel('tank_large');
-        const chimneyGlb = this.cloneModel('chimney_medium');
+        const tankGlb = this.cloneModel('tank_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const chimneyGlb = this.cloneModel('chimney_medium', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
         if (tankGlb) {
             tankGlb.scale.set(size * 0.5, size * 0.55, size * 0.5);
             tankGlb.position.set(-size * 0.2, 0, -size * 0.15);
@@ -1265,6 +1509,12 @@ export class ModelFactory3D {
             );
             fluidGroup.add(glassSheath);
             group.add(fluidGroup);
+
+            // Copper connection pipes
+            const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, size * 0.5, 8), this.materials.copper);
+            pipe.rotation.z = Math.PI / 2;
+            pipe.position.set(0, 1.5, 0);
+            group.add(pipe);
 
             return group;
         }
@@ -1418,10 +1668,20 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        const crossGlb = this.cloneModel('conveyor_cross');
-        const scannerGlb = this.cloneModel('scanner_low');
+        const crossGlb = this.cloneModel('conveyor_cross', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const scannerGlb = this.cloneModel('scanner_low', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4,
+            emissive: 0x0EA5E9,
+            emissiveIntensity: 1.5
+        });
         if (crossGlb) {
-            crossGlb.scale.set(ts * 0.94, ts * 0.94, ts * 0.94);
+            crossGlb.scale.set(ts * 0.94, 0.42, ts * 0.94);
             group.add(crossGlb);
 
             if (scannerGlb) {
@@ -1429,6 +1689,14 @@ export class ModelFactory3D {
                 scannerGlb.position.set(0, 0.4, 0);
                 group.add(scannerGlb);
             }
+
+            const scanBeam = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.12, 0.12, 0.04, 12),
+                this.materials.brightCyan
+            );
+            scanBeam.position.set(0, 0.72, 0);
+            group.add(scanBeam);
+
             return group;
         }
 
@@ -1474,7 +1742,15 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        const armGlb = this.cloneModel('robot_arm_a');
+        const armGlb = this.cloneModel('robot_arm_a', {
+            primaryColor: 0xEF4444,
+            metalness: 0.2,
+            roughness: 0.35,
+            subMeshColors: {
+                'claw': 0xE2E8F0,
+                'base': 0x334155
+            }
+        });
         if (armGlb) {
             const base = new THREE.Mesh(
                 new THREE.CylinderGeometry(ts * 0.4, ts * 0.46, 0.24, 16),
@@ -1491,6 +1767,10 @@ export class ModelFactory3D {
             armGlb.scale.set(ts * 0.8, ts * 0.8, ts * 1.3);
             armGlb.position.set(0, 0, 0.15);
             armGroup.add(armGlb);
+
+            const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), this.materials.moltenCore);
+            beacon.position.set(0, 0.45, 0.5);
+            armGroup.add(beacon);
 
             const clawItem = new THREE.Group();
             clawItem.name = 'clawItem';
@@ -1597,7 +1877,7 @@ export class ModelFactory3D {
         const colGeom = new THREE.BoxGeometry(0.12, 3.0, 0.12);
         for (let x of [-ts * 0.38, ts * 0.38]) {
             for (let z of [-ts * 0.38, ts * 0.38]) {
-                const col = new THREE.Mesh(colGeom, this.materials.lightSteel);
+                const col = new THREE.Mesh(colGeom, this.materials.industrialCyan);
                 col.position.set(x, 1.65, z);
                 group.add(col);
             }
@@ -1669,8 +1949,16 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
 
-        const machineGlb = this.cloneModel('machine_fortified');
-        const chimneyGlb = this.cloneModel('chimney_large');
+        const machineGlb = this.cloneModel('machine_fortified', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const chimneyGlb = this.cloneModel('chimney_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
         if (machineGlb) {
             machineGlb.scale.set(size * 0.58, size * 0.58, size * 0.58);
             machineGlb.position.set(0, 0, 0);
@@ -1758,9 +2046,21 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
 
-        const machineGlb = this.cloneModel('machine_fortified');
-        const pistonGlb = this.cloneModel('piston_round');
-        const pipeGlb = this.cloneModel('machine_pipe');
+        const machineGlb = this.cloneModel('machine_fortified', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const pistonGlb = this.cloneModel('piston_round', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.25,
+            roughness: 0.35
+        });
+        const pipeGlb = this.cloneModel('machine_pipe', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.2,
+            roughness: 0.35
+        });
 
         if (machineGlb) {
             machineGlb.scale.set(size * 0.62, size * 0.6, size * 0.62);
@@ -1778,6 +2078,15 @@ export class ModelFactory3D {
                 pipeGlb.position.set(size * 0.3, 0.5, 0);
                 group.add(pipeGlb);
             }
+
+            // Caution stripes gantry on top
+            const gantry = new THREE.Mesh(
+                new THREE.BoxGeometry(size * 0.75, 0.12, size * 0.6),
+                this.materials.hazardStripe
+            );
+            gantry.position.set(0, 2.1, 0);
+            group.add(gantry);
+
             return group;
         }
 
@@ -1880,7 +2189,15 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
-        const glb = this.cloneModel('windmill');
+        const glb = this.cloneModel('windmill', {
+            primaryColor: 0xF8FAFC,
+            metalness: 0.2,
+            roughness: 0.35,
+            subMeshColors: {
+                'blades': 0xF8FAFC,
+                'nacelle': 0x334155
+            }
+        });
         if (glb) {
             glb.scale.set(ts * 0.72, ts * 0.72, ts * 0.72);
             glb.position.set(0, 0, 0);
@@ -1900,8 +2217,26 @@ export class ModelFactory3D {
                 blade.position.set(Math.sin(angle) * 0.9, Math.cos(angle) * 0.9, 0);
                 blade.rotation.z = -angle;
                 rotorGroup.add(blade);
+
+                // Red hazard tips
+                const tip = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.09, 0.35, 0.05),
+                    this.materials.crimsonSteel
+                );
+                tip.position.set(Math.sin(angle) * 1.65, Math.cos(angle) * 1.65, 0);
+                tip.rotation.z = -angle;
+                rotorGroup.add(tip);
             }
             group.add(rotorGroup);
+
+            // Aviation strobe light
+            const strobe = new THREE.Mesh(
+                new THREE.SphereGeometry(0.08, 8, 8),
+                new THREE.MeshStandardMaterial({ color: 0xEF4444, emissive: 0xEF4444, emissiveIntensity: 2.5 })
+            );
+            strobe.position.set(0, 4.45, 0);
+            group.add(strobe);
+
             return group;
         }
 
@@ -1960,8 +2295,16 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
 
-        const buildingGlb = this.cloneModel('building_f');
-        const tankGlb = this.cloneModel('tank_large');
+        const buildingGlb = this.cloneModel('building_f', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
+        const tankGlb = this.cloneModel('tank_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.15,
+            roughness: 0.4
+        });
 
         if (buildingGlb) {
             buildingGlb.scale.set(size * 0.55, size * 0.55, size * 0.55);
@@ -1981,6 +2324,10 @@ export class ModelFactory3D {
             pool.position.set(-size * 0.18, 0.6, -size * 0.1);
             pool.name = 'cherenkovCore';
             group.add(pool);
+
+            const nukeGlow = new THREE.PointLight(0x84CC16, 2.0, 10, 2.0);
+            nukeGlow.position.set(-size * 0.18, 0.8, -size * 0.1);
+            group.add(nukeGlow);
 
             return group;
         }
@@ -2078,8 +2425,16 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
 
-        const tankGlb = this.cloneModel('tank_large');
-        const hopperGlb = this.cloneModel('hopper_round');
+        const tankGlb = this.cloneModel('tank_large', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.18,
+            roughness: 0.35
+        });
+        const hopperGlb = this.cloneModel('hopper_round', {
+            primaryColor: 0xFFFFFF,
+            metalness: 0.18,
+            roughness: 0.35
+        });
 
         if (tankGlb) {
             tankGlb.scale.set(size * 0.62, size * 0.78, size * 0.62);
@@ -2091,6 +2446,17 @@ export class ModelFactory3D {
                 hopperGlb.position.set(0, 2.6, 0);
                 group.add(hopperGlb);
             }
+
+            // Helical warning stairs
+            const steps = 14;
+            for (let i = 0; i < steps; i++) {
+                const angle = (i / steps) * Math.PI * 2.2;
+                const step = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.06, 0.35), this.materials.industrialYellow);
+                step.position.set(Math.cos(angle) * size * 0.44, 0.4 + i * 0.24, Math.sin(angle) * size * 0.44);
+                step.rotation.y = -angle;
+                group.add(step);
+            }
+
             return group;
         }
 

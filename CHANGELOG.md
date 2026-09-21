@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.1] - 2026-09-21
+
+### Fixed
+- **Open-Source 3D Model Texture Mapping & PBR Color Restoration**:
+  - Fixed issue where open-source Kenney CC0 models appeared monochrome/grey due to missing external `Textures/colormap.png` atlas dependency and texture color suppression.
+  - Extracted and linked authentic Kenney color atlas `colormap.png` across model directories with explicit `THREE.SRGBColorSpace` decoding.
+  - Re-engineered `cloneModel()` deep-cloning pipeline to preserve 100% of Kenney's baked multi-tone atlas texture colors without crushing diffuse channels.
+  - Balanced PBR metalness and roughness values (reduced excessive 0.85-0.95 metalness to 0.15-0.35) so diffuse texture illumination remains bright and vibrant without requiring an HDR environment map.
+- **Dock UI Locked State Overhaul**:
+  - Removed aggressive `filter: grayscale(1)` and 0.35 opacity on locked hotbar slots that turned 90% of dock previews into colorless silhouettes.
+  - Replaced with modern industrial slot design: 3D models remain in full, vibrant color with crisp drop shadows, accompanied by a subtle golden lock badge and gentle 20% dimming.
+- **Thumbnail Studio 3-Point Studio Lighting Recalibration**:
+  - Enhanced offscreen thumbnail generation with balanced ambient (0.90), warm key (1.40), sky blue fill (0.85), and golden rim light (0.95) for crystal-clear 3D item forms.
+  - Added cache validation so temporary procedural fallback geometry is never permanently cached before GLB models finish loading.
+- **Mining Drill Model Enhancement**:
+  - Integrated Kenney open-source `machine.glb` with animated rotating helical titanium auger drill bit and summit amber warning beacon.
+
+---
+
 ## [1.6.0] - 2026-09-21
 
 ### Added

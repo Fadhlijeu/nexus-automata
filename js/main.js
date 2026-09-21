@@ -3,12 +3,12 @@
  * Nexus Automata (Three.js 3D Engine)
  */
 
-import { WorldGrid } from './grid.js?v=32';
-import { SimulationEngine } from './simulation.js?v=32';
-import { Renderer3D } from './renderer3d.js?v=32';
-import { UIController } from './ui.js?v=32';
-import { DIRECTIONS, BUILDINGS, TECH_TREE } from './data.js?v=32';
-import { sound } from './audio.js?v=32';
+import { WorldGrid } from './grid.js?v=35';
+import { SimulationEngine } from './simulation.js?v=35';
+import { Renderer3D } from './renderer3d.js?v=35';
+import { UIController } from './ui.js?v=35';
+import { DIRECTIONS, BUILDINGS, TECH_TREE } from './data.js?v=35';
+import { sound } from './audio.js?v=35';
 
 class GameApp {
     constructor() {

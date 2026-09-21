@@ -12,6 +12,9 @@ Thumbs.db
 .FullName
 update_versions.ps1
 
+# Archives
+*.zip
+
 # Antigravity artifacts & temp
 .tempmediaStorage/
 scratch/
