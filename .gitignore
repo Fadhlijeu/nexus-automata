@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment and IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+*.tmp
+.FullName
+update_versions.ps1
+
+# Antigravity artifacts & temp
+.tempmediaStorage/
+scratch/

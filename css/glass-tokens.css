@@ -1,0 +1,98 @@
+/**
+ * Glass Dark Premium — Design System Tokens
+ * Adapted from D:/PROJECT/prototype/ui/web/components/glass/css.css & STYLE_SPEC.md
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+    /* 1. Canvas & Page Backgrounds (Deep Obsidian Dark) */
+    --bg-page: #08080C;
+    --bg-surface: #0A0A0E;
+    --bg-elevated: #111118;
+    --bg-void: #030712;
+
+    /* 2. Glass Surfaces (Multi-layer Opacities) */
+    --glass-base: rgba(255, 255, 255, 0.04);
+    --glass-panel: rgba(20, 20, 28, 0.65);
+    --glass-card: rgba(255, 255, 255, 0.06);
+    --glass-card-hover: rgba(255, 255, 255, 0.10);
+    --glass-elevated: rgba(255, 255, 255, 0.12);
+    --glass-pill: rgba(255, 255, 255, 0.08);
+    --glass-active: rgba(74, 158, 255, 0.15);
+
+    /* 3. Asymmetric Specular Borders (Simulasi Arah Cahaya dari Atas) */
+    --glass-border-top: rgba(255, 255, 255, 0.24);
+    --glass-border-side: rgba(255, 255, 255, 0.10);
+    --glass-border-bottom: rgba(255, 255, 255, 0.04);
+    --glass-border-accent: rgba(74, 158, 255, 0.45);
+
+    /* 4. Typography Colors */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.70);
+    --text-muted: rgba(255, 255, 255, 0.40);
+    --text-dim: rgba(255, 255, 255, 0.25);
+
+    /* 5. Accent & Semantic Signal Colors */
+    --accent-cyan: #22D3EE;
+    --accent-blue: #4A9EFF;
+    --accent-indigo: #6366F1;
+    --accent-purple: #A855F7;
+    --accent-pink: #EC4899;
+    --accent-green: #10B981;
+    --accent-emerald: #059669;
+    --accent-amber: #F59E0B;
+    --accent-orange: #F97316;
+    --accent-red: #EF4444;
+
+    /* 6. Item & Resource Palette */
+    --item-iron: #94A3B8;
+    --item-copper: #FB923C;
+    --item-coal: #334155;
+    --item-stone: #A8A29E;
+    --item-crystal: #C084FC;
+    --item-wire: #FDBA74;
+    --item-gear: #CBD5E1;
+    --item-circuit: #34D399;
+    --item-steel: #64748B;
+    --item-motor: #60A5FA;
+    --item-science1: #38BDF8;
+    --item-science2: #A78BFA;
+    --item-core: #F43F5E;
+
+    /* 7. Aurora Atmosphere & Glows */
+    --aurora-cyan: rgba(34, 211, 238, 0.25);
+    --aurora-blue: rgba(74, 158, 255, 0.20);
+    --aurora-purple: rgba(168, 85, 247, 0.20);
+    --aurora-amber: rgba(245, 158, 11, 0.20);
+    --aurora-green: rgba(16, 185, 129, 0.20);
+
+    /* 8. Shadows & Optical Depth */
+    --shadow-glass: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    --shadow-glass-elevated: 0 24px 48px rgba(0, 0, 0, 0.65), 0 0 20px rgba(74, 158, 255, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.18);
+    --shadow-glow-cyan: 0 0 24px rgba(34, 211, 238, 0.35);
+    --shadow-glow-blue: 0 0 24px rgba(74, 158, 255, 0.35);
+    --shadow-glow-green: 0 0 24px rgba(16, 185, 129, 0.35);
+
+    /* 9. Border Radius Hierarchy */
+    --radius-xs: 6px;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-full: 9999px;
+
+    /* 10. Blur & Filter Standards */
+    --blur-glass-light: blur(14px) saturate(150%);
+    --blur-glass-standard: blur(24px) saturate(170%);
+    --blur-glass-heavy: blur(36px) saturate(190%);
+
+    /* 11. Physics & Animation Timings */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.25, 0.64, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* 12. Typography Families */
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}

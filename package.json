@@ -1,0 +1,30 @@
+{
+  "name": "nexus-automata",
+  "version": "1.2.0",
+  "description": "Nexus Automata - 3D Industrial Automation & Factory Logistics Simulator built with Three.js WebGL",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "keywords": [
+    "factory-simulation",
+    "automation",
+    "factorio",
+    "satisfactory",
+    "builderment",
+    "threejs",
+    "webgl",
+    "3d-game"
+  ],
+  "author": "Fadhli",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fadhlijeu/nexus-automata.git"
+  },
+  "dependencies": {
+    "three": "^0.186.0"
+  }
+}
