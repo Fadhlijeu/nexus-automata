@@ -1,6 +1,10 @@
-# Nexus Automata — Web Factory Automation Simulator 🏭⚡
+# Nexus Automata — 3D Factory Automation Simulator 🏭⚡
 
-**Nexus Automata** adalah game simulasi pabrik dan logistik otomasi berbasis web modern (terinspirasi dari **Factorio**, **Satisfactory**, dan **Builderment**), dibangun menggunakan arsitektur **HTML5 Canvas 60 FPS**, sistem desain **Glass Dark Premium**, dan **Web Audio API procedural sound synthesizer**.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Fadhlijeu%2Fnexus--automata-181717.svg?logo=github)](https://github.com/Fadhlijeu/nexus-automata)
+[![Changelog](https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-orange.svg)](CHANGELOG.md)
+
+**Nexus Automata** adalah game simulasi pabrik dan logistik otomasi 3D modern berbasis web (terinspirasi dari **Satisfactory**, **Factorio**, dan **Builderment**), dibangun menggunakan arsitektur **Three.js WebGL 3D Engine (60 FPS)**, pencahayaan astronomis dinamis dengan bayangan lembut (`PCFSoftShadowMap`), model mesin industri prosedural, sistem desain **Glass Dark Premium**, dan **Web Audio API procedural sound synthesizer**.
 
 ---
 
