@@ -243,7 +243,7 @@ export class UIController {
             `;
 
             slot.addEventListener('click', () => {
-                if (!b.unlocked) {
+                if (!b.unlocked && !b.isTool) {
                     this.showToast('Locked', `${b.name} requires further technological research!`, 'warning');
                     return;
                 }
@@ -299,6 +299,28 @@ export class UIController {
                 return `<svg viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2"><path d="M4 19V9h16v10M2 9h20M7 19v-4M17 19v-4"/></svg>`;
             case 'chemical_plant':
                 return `<svg viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2"><path d="M6 2v6l-3 10a2 2 0 002 2h14a2 2 0 002-2L18 8V2M6 2h12M9 13h6"/></svg>`;
+            case 'smart_splitter':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 18V6M7 9l5-3 5 3M7 15l5-3 5 3"/></svg>`;
+            case 'long_inserter':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"><circle cx="12" cy="19" r="3"/><path d="M12 16l6-9-4-5M18 7l4-1M14 2l-1-2"/></svg>`;
+            case 'conveyor_lift':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M9 7l3-3 3 3M12 4v16M9 17l3 3 3-3"/></svg>`;
+            case 'belt_crossing':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18M3 12h18"/></svg>`;
+            case 'foundry':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2"><path d="M4 22h16M6 22V8a2 2 0 012-2h8a2 2 0 012 2v14M10 14h4M12 14v4M9 2l1 4M15 2l-1 4"/></svg>`;
+            case 'manufacturer':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M6 6V3h12v3M10 12h4M12 10v4M2 14h20"/></svg>`;
+            case 'greenhouse':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2"><path d="M3 20h18M12 4a9 9 0 00-9 9v7h18v-7a9 9 0 00-9-9zM12 4v16M7 13h10"/></svg>`;
+            case 'wind_turbine':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><path d="M12 13v9M12 13l-6-7M12 13l7-5M12 13l-1-9"/><circle cx="12" cy="13" r="1.5"/></svg>`;
+            case 'nuclear_reactor':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#84CC16" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 00-7.07 17.07l2.83-2.83a6 6 0 014.24-10.24V2zM22 12a10 10 0 00-17.07-7.07l2.83 2.83a6 6 0 0110.24 4.24H22zM12 22a10 10 0 007.07-17.07l-2.83 2.83a6 6 0 01-4.24 10.24v4z"/></svg>`;
+            case 'accumulator':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M7 6V3h2v3M15 6V3h2v3M8 13h8M12 9v8"/></svg>`;
+            case 'storage_silo_mk2':
+                return `<svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="4"/><path d="M4 8h16M4 14h16M4 18h16"/></svg>`;
             default:
                 return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/></svg>`;
         }
@@ -910,15 +932,15 @@ export class UIController {
         if (!container) return;
 
         const toast = document.createElement('div');
-        toast.className = 'glass-toast';
+        toast.className = 'toast-card';
 
         let iconSvg = '';
         if (type === 'success') {
-            iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>`;
+            iconSvg = `<svg width="18" height="18" style="width:18px;height:18px;max-width:18px;max-height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>`;
         } else if (type === 'warning') {
-            iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>`;
+            iconSvg = `<svg width="18" height="18" style="width:18px;height:18px;max-width:18px;max-height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>`;
         } else {
-            iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>`;
+            iconSvg = `<svg width="18" height="18" style="width:18px;height:18px;max-width:18px;max-height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>`;
         }
 
         toast.innerHTML = `

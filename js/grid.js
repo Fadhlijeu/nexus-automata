@@ -252,7 +252,22 @@ export class WorldGrid {
                 const connected = network.poles.some(p => Math.hypot(p.x - gen.x, p.y - gen.y) <= poleCoverage + gen.size);
                 if (connected && !network.generators.includes(gen)) {
                     network.generators.push(gen);
-                    network.capacity += (gen.def.powerGen || 0);
+                    let activeGen = gen.def.powerGen || 0;
+                    if ((gen.type === 'coal_generator' || gen.type === 'nuclear_reactor') && gen.fuelTime <= 0) {
+                        activeGen = 0;
+                    }
+                    network.capacity += activeGen;
+                }
+            });
+
+            // Accumulator battery banks
+            network.accumulators = [];
+            const accumulators = this.buildingList.filter(b => b.type === 'accumulator');
+            accumulators.forEach(acc => {
+                const connected = network.poles.some(p => Math.hypot(p.x - acc.x, p.y - acc.y) <= poleCoverage + acc.size);
+                if (connected && !network.accumulators.includes(acc)) {
+                    network.accumulators.push(acc);
+                    if (acc.storedEnergy === undefined) acc.storedEnergy = 2500;
                 }
             });
 
@@ -264,6 +279,29 @@ export class WorldGrid {
                     network.demand += (cons.def.powerNeed || 0) * powerMult;
                 }
             });
+
+            // Handle accumulator battery support during deficits or surpluses
+            if (network.capacity < network.demand) {
+                let dischargeTotal = 0;
+                network.accumulators.forEach(acc => {
+                    if (acc.storedEnergy > 10) {
+                        const canProvide = Math.min(acc.def.chargeRate || 75, acc.storedEnergy / 10);
+                        dischargeTotal += canProvide;
+                        acc.status = 'discharging';
+                    } else {
+                        acc.status = 'idle';
+                    }
+                });
+                network.capacity += dischargeTotal;
+            } else if (network.capacity > network.demand) {
+                network.accumulators.forEach(acc => {
+                    if (acc.storedEnergy < (acc.def.powerCapacity || 5000)) {
+                        acc.status = 'charging';
+                    } else {
+                        acc.status = 'idle';
+                    }
+                });
+            }
 
             // Calculate satisfaction ratio
             if (network.demand === 0) {

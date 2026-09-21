@@ -325,7 +325,7 @@ export class Renderer3D {
                 const r2 = mesh.getObjectByName('orbitRing2');
                 if (r1) r1.rotation.x += 0.04;
                 if (r2) r2.rotation.y += 0.05;
-            } else if (b.type === 'inserter' || b.type === 'fast_inserter') {
+            } else if (b.type === 'inserter' || b.type === 'fast_inserter' || b.type === 'long_inserter') {
                 const arm = mesh.getObjectByName('inserterArm');
                 if (arm) {
                     arm.rotation.y = b.armAngle;
@@ -351,6 +351,48 @@ export class Renderer3D {
                     } else {
                         clawItem.visible = false;
                     }
+                }
+            } else if (b.type === 'wind_turbine') {
+                const rotor = mesh.getObjectByName('turbineRotor');
+                if (rotor) {
+                    rotor.rotation.z += dt * 4.5;
+                }
+            } else if (b.type === 'nuclear_reactor') {
+                const core = mesh.getObjectByName('cherenkovCore');
+                if (core && core.material) {
+                    const intensity = b.status === 'working' ? 1.6 + 0.5 * Math.sin(performance.now() * 0.006) : 0.2;
+                    core.material.emissiveIntensity = intensity;
+                }
+                if (b.status === 'working' && Math.random() < 0.35) {
+                    const px = b.x * ts + (b.size * ts) / 2;
+                    const pz = b.y * ts + (b.size * ts) / 2;
+                    this.emitSmoke(px - 0.7, 4.4, pz - 0.4, false);
+                }
+            } else if (b.type === 'foundry') {
+                const molten = mesh.getObjectByName('moltenRunner');
+                if (molten && molten.material) {
+                    const intensity = b.status === 'working' ? 1.4 + 0.4 * Math.sin(b.animationTime * 6) : 0.2;
+                    molten.material.emissiveIntensity = intensity;
+                }
+                if (b.status === 'working' && Math.random() < 0.22) {
+                    const px = b.x * ts + (b.size * ts) / 2;
+                    const pz = b.y * ts + (b.size * ts) / 2;
+                    this.emitSmoke(px - 0.8, 3.8, pz - 0.6, false);
+                    this.emitSmoke(px + 0.8, 3.8, pz - 0.6, false);
+                }
+            } else if (b.type === 'manufacturer') {
+                const ram = mesh.getObjectByName('hydraulicRam');
+                if (ram && b.status === 'working') {
+                    ram.position.y = 1.3 + Math.abs(Math.sin(b.animationTime * 4)) * 0.6;
+                }
+            } else if (b.type === 'accumulator') {
+                const meter = mesh.getObjectByName('accumulatorMeter');
+                if (meter && meter.children) {
+                    const chargePct = (b.storedEnergy || 0) / (b.def.powerCapacity || 5000);
+                    const activeLeds = Math.round(chargePct * 5);
+                    meter.children.forEach((led, idx) => {
+                        led.visible = idx < activeLeds;
+                    });
                 }
             } else if (b.type === 'chemical_plant') {
                 const fluidVessel = mesh.getObjectByName('fluidVessel');

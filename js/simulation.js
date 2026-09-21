@@ -87,8 +87,29 @@ export class SimulationEngine {
                         gridNeedsRefresh = true;
                     }
                 }
-            } else if (b.type === 'solar_panel') {
+            } else if (b.type === 'nuclear_reactor') {
+                if (b.fuelTime > 0) {
+                    b.fuelTime -= dt;
+                    b.status = 'working';
+                } else {
+                    // Try to consume fuel_rod from inputs
+                    if (b.inventory.inputs['fuel_rod'] && b.inventory.inputs['fuel_rod'] > 0) {
+                        b.inventory.inputs['fuel_rod']--;
+                        b.fuelTime = 90.0; // 90 seconds per fuel rod
+                        b.status = 'working';
+                    } else {
+                        b.status = 'no_fuel';
+                        gridNeedsRefresh = true;
+                    }
+                }
+            } else if (b.type === 'solar_panel' || b.type === 'wind_turbine') {
                 b.status = 'working';
+            } else if (b.type === 'accumulator') {
+                if (b.status === 'charging') {
+                    b.storedEnergy = Math.min(b.def.powerCapacity || 5000, (b.storedEnergy || 0) + (b.def.chargeRate || 75) * dt);
+                } else if (b.status === 'discharging') {
+                    b.storedEnergy = Math.max(0, (b.storedEnergy || 0) - (b.def.chargeRate || 75) * dt);
+                }
             }
         });
 
@@ -133,9 +154,10 @@ export class SimulationEngine {
     }
 
     updateBelts(dt) {
-        // Collect all belts
+        // Collect all belts & logistics conduits
         const belts = this.grid.buildingList.filter(b => 
-            b.type === 'belt' || b.type === 'fast_belt' || b.type === 'splitter' || b.type === 'merger' || b.type === 'underground_belt'
+            b.type === 'belt' || b.type === 'fast_belt' || b.type === 'splitter' || b.type === 'merger' || 
+            b.type === 'underground_belt' || b.type === 'smart_splitter' || b.type === 'conveyor_lift' || b.type === 'belt_crossing'
         );
 
         // Process belts in reverse item order
@@ -172,8 +194,21 @@ export class SimulationEngine {
     transferBeltItem(belt, item, itemIndex) {
         let targetX, targetY, targetDir = belt.direction;
 
-        // Splitter logic: alternates left and right
-        if (belt.type === 'splitter') {
+        // Smart Splitter logic: Filter left / right / straight
+        if (belt.type === 'smart_splitter') {
+            let chosenDir = belt.direction;
+            if (belt.filterLeft && item.type === belt.filterLeft) {
+                chosenDir = (belt.direction + 3) % 4;
+            } else if (belt.filterRight && item.type === belt.filterRight) {
+                chosenDir = (belt.direction + 1) % 4;
+            } else {
+                chosenDir = belt.direction; // Default straight
+            }
+            const offset = DIR_OFFSET[chosenDir];
+            targetX = belt.x + offset.dx;
+            targetY = belt.y + offset.dy;
+            targetDir = chosenDir;
+        } else if (belt.type === 'splitter') {
             const splitLeftDir = (belt.direction + 3) % 4;
             const splitRightDir = (belt.direction + 1) % 4;
             const chosenDir = belt.beltSplitSide === 0 ? splitLeftDir : splitRightDir;
@@ -181,6 +216,14 @@ export class SimulationEngine {
             const offset = DIR_OFFSET[chosenDir];
             targetX = belt.x + offset.dx;
             targetY = belt.y + offset.dy;
+            targetDir = chosenDir;
+        } else if (belt.type === 'belt_crossing') {
+            // Pass straight through along arrival axis
+            const moveDir = item.entryDir !== undefined ? item.entryDir : belt.direction;
+            const offset = DIR_OFFSET[moveDir];
+            targetX = belt.x + offset.dx;
+            targetY = belt.y + offset.dy;
+            targetDir = moveDir;
         } else if (belt.type === 'underground_belt' && belt.undergroundTarget) {
             // Tunnel teleport directly to exit underground belt!
             const exitBelt = belt.undergroundTarget;
@@ -188,7 +231,8 @@ export class SimulationEngine {
                 exitBelt.items.push({
                     id: item.id,
                     type: item.type,
-                    pos: 0.1
+                    pos: 0.1,
+                    entryDir: belt.direction
                 });
                 return true;
             }
@@ -197,17 +241,23 @@ export class SimulationEngine {
             const offset = DIR_OFFSET[belt.direction];
             targetX = belt.x + offset.dx;
             targetY = belt.y + offset.dy;
+            targetDir = belt.direction;
         }
 
         const targetBuilding = this.grid.getBuilding(targetX, targetY);
         if (!targetBuilding) return false;
 
-        return this.tryFeedItem(targetBuilding, item.type, targetX, targetY);
+        return this.tryFeedItem(targetBuilding, item.type, targetX, targetY, targetDir);
     }
 
-    tryFeedItem(targetBuilding, itemType, tileX, tileY) {
-        // Case 1: Target is a Conveyor Belt
-        if (targetBuilding.type === 'belt' || targetBuilding.type === 'fast_belt' || targetBuilding.type === 'splitter' || targetBuilding.type === 'merger' || targetBuilding.type === 'underground_belt') {
+    tryFeedItem(targetBuilding, itemType, tileX, tileY, sourceDir) {
+        // Case 1: Target is a Conveyor Belt / Conduit
+        const isBeltType = targetBuilding.type === 'belt' || targetBuilding.type === 'fast_belt' || 
+                           targetBuilding.type === 'splitter' || targetBuilding.type === 'merger' || 
+                           targetBuilding.type === 'underground_belt' || targetBuilding.type === 'smart_splitter' || 
+                           targetBuilding.type === 'conveyor_lift' || targetBuilding.type === 'belt_crossing';
+
+        if (isBeltType) {
             if (targetBuilding.items.length < 2) {
                 // Check if entry space is free
                 const hasBlockAtEntry = targetBuilding.items.some(it => it.pos < 0.35);
@@ -215,7 +265,8 @@ export class SimulationEngine {
                     targetBuilding.items.push({
                         id: Math.random(),
                         type: itemType,
-                        pos: 0.05
+                        pos: 0.05,
+                        entryDir: sourceDir !== undefined ? sourceDir : targetBuilding.direction
                     });
                     return true;
                 }
@@ -223,12 +274,12 @@ export class SimulationEngine {
             return false;
         }
 
-        // Case 2: Target is a Machine (Smelter, Assembler, Silo, Lab, Coal Gen, Space Elevator)
+        // Case 2: Target is a Machine, Generator, Silo, Lab, or Space Elevator
         const inputs = targetBuilding.inventory.inputs;
         const currentCount = inputs[itemType] || 0;
 
         // Buffer limit per slot
-        const maxInputBuffer = targetBuilding.type === 'storage_silo' ? 250 : 20;
+        const maxInputBuffer = targetBuilding.type === 'storage_silo_mk2' ? 800 : (targetBuilding.type === 'storage_silo' ? 250 : 25);
 
         if (currentCount < maxInputBuffer) {
             inputs[itemType] = currentCount + 1;
@@ -239,7 +290,9 @@ export class SimulationEngine {
     }
 
     updateInserters(dt) {
-        const inserters = this.grid.buildingList.filter(b => b.type === 'inserter' || b.type === 'fast_inserter');
+        const inserters = this.grid.buildingList.filter(b => 
+            b.type === 'inserter' || b.type === 'fast_inserter' || b.type === 'long_inserter'
+        );
 
         inserters.forEach(b => {
             if (b.powerRatio <= 0.05) {
@@ -249,15 +302,16 @@ export class SimulationEngine {
 
             b.status = 'working';
             const speed = (b.def.speed || 1.5) * b.powerRatio * (b.clockSpeed || 1.0);
+            const reach = b.def.reach || 1;
 
             // Inserter geometry: pickup tile is behind (opposite of direction), dropoff is in front
             const dropOffset = DIR_OFFSET[b.direction];
             const pickOffset = DIR_OFFSET[(b.direction + 2) % 4];
 
-            const pickX = b.x + pickOffset.dx;
-            const pickY = b.y + pickOffset.dy;
-            const dropX = b.x + dropOffset.dx;
-            const dropY = b.y + dropOffset.dy;
+            const pickX = b.x + pickOffset.dx * reach;
+            const pickY = b.y + pickOffset.dy * reach;
+            const dropX = b.x + dropOffset.dx * reach;
+            const dropY = b.y + dropOffset.dy * reach;
 
             if (!b.heldItem) {
                 // Swing arm back to pickup position (0 radians)
@@ -309,14 +363,19 @@ export class SimulationEngine {
                         if (dropBuilding.items) {
                             const hasSpace = dropBuilding.items.every(it => it.pos > 0.28);
                             if (hasSpace) {
-                                dropBuilding.items.push({ id: Math.random(), type: b.heldItem, pos: 0.0 });
+                                dropBuilding.items.push({ 
+                                    id: Math.random(), 
+                                    type: b.heldItem, 
+                                    pos: 0.0,
+                                    entryDir: b.direction
+                                });
                                 b.heldItem = null;
                             }
                         }
                         // 2. Drop into machine or silo inputs
                         else if (dropBuilding.inventory && dropBuilding.inventory.inputs) {
                             const current = dropBuilding.inventory.inputs[b.heldItem] || 0;
-                            const maxBuffer = dropBuilding.type === 'storage_silo' ? 250 : 25;
+                            const maxBuffer = dropBuilding.type === 'storage_silo_mk2' ? 800 : (dropBuilding.type === 'storage_silo' ? 250 : 25);
                             if (current < maxBuffer) {
                                 dropBuilding.inventory.inputs[b.heldItem] = current + 1;
                                 b.heldItem = null;
@@ -330,7 +389,8 @@ export class SimulationEngine {
 
     updateManufacturers(dt) {
         this.grid.buildingList.forEach(b => {
-            if (b.type !== 'smelter' && b.type !== 'assembler' && b.type !== 'chemical_plant') return;
+            if (b.type !== 'smelter' && b.type !== 'assembler' && b.type !== 'chemical_plant' && 
+                b.type !== 'foundry' && b.type !== 'manufacturer' && b.type !== 'greenhouse') return;
 
             // Power check
             if (b.powerRatio <= 0.05) {
@@ -416,7 +476,7 @@ export class SimulationEngine {
 
         for (const [itemType, count] of Object.entries(machine.inventory.outputs)) {
             if (count > 0) {
-                if (this.tryFeedItem(targetBuilding, itemType, ejectX, ejectY)) {
+                if (this.tryFeedItem(targetBuilding, itemType, ejectX, ejectY, machine.direction)) {
                     machine.inventory.outputs[itemType]--;
                     break;
                 }

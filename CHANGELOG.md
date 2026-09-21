@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - 2026-09-21
+
+### Fixed
+- **Catastrophic Giant Toast SVG Icon Bug**:
+  - Eliminated unconstrained SVGs inside toast notifications that expanded to 100% viewport width, blocking the entire screen with giant checkmarks and circles.
+  - Enforced strict CSS constraints in `css/components.css` (`.toast-container svg, .toast-card svg, .glass-toast svg { width: 18px !important; height: 18px !important; }`), bound toast icons inside 20x20px rigid flex containers, and added inline `width="18" height="18"` directly onto SVG elements.
+  - Fixed erroneous "Locked" warning on `Inspect / Select` and `Deconstruct / Demolish` tools by adding `unlocked: true` and bypassing unlock checks for tool-category items (`!b.unlocked && !b.isTool`).
+
+### Added
+- **Major Industrial Variants Expansion (11 New Buildings)**:
+  - **Logistics**:
+    - `smart_splitter`: 3-way sorting junction with programmable optical filter scanner for Left, Right, and Straight lanes.
+    - `long_inserter`: Long-reach articulated robotic arm spanning 2 grid tiles with crimson steel chassis.
+    - `conveyor_lift`: Vertical pneumatic lift tower transporting items across elevation planes at 2.6 tiles/sec.
+    - `belt_crossing`: 4-way grade intersection allowing perpendicular conveyor lines to cross seamlessly without mingling.
+  - **Advanced Production**:
+    - `foundry`: Dual-furnace 3x3 heavy blast alloy foundry with molten slag channel and dual exhaust stacks for smelting titanium and high-strength steel alloys.
+    - `manufacturer`: 4-feeder heavy industrial plant (3x3) with reciprocating hydraulic stamping ram producing microprocessors, heavy frames, and quantum cubes.
+    - `greenhouse`: Geodesic bio-dome (2x2) with circular growth bed and central violet UV grow lamp cultivating algae and biomass for renewable hydrocarbons.
+  - **Power & Energy Storage**:
+    - `wind_turbine`: 5.5m slender composite mast with spinning 3-blade aerodynamic rotor generating continuous 15 kW clean power anywhere on terrain.
+    - `nuclear_reactor`: Colossal 3x3 fission plant featuring a massive cooling tower with Cherenkov radiation core pool, pressure containment vessel, control rod actuators, and billowing white steam puffs, generating 280 kW from refined uranium fuel rods.
+    - `accumulator`: High-voltage battery bank (2x2) with 4 power capacitors and a 5-stage LED charge level meter that automatically absorbs surplus energy and discharges up to 75 kW during grid deficits.
+  - **Bulk Storage**:
+    - `storage_silo_mk2`: Reinforced cylindrical silo (2x2) boasting an 800-item buffer capacity.
+- **New Materials, Items & Recipes**:
+  - Items: `titanium_ore`, `uranium_ore`, `titanium_plate`, `microprocessor`, `heavy_frame`, `fuel_rod`, `quantum_cube`, `biomass`.
+  - Recipes: `smelt_titanium`, `smelt_steel_alloy`, `craft_heavy_frame`, `craft_microprocessor`, `craft_quantum_cube`, `refine_fuel_rod`, `cultivate_biomass`.
+  - Physical Conveyor Meshes: Added physical 3D meshes for all 8 new items on moving conveyor belts.
+- **Expanded Technology Tree (7 New Researches)**:
+  - `renewable_energy` (Aero Kinetic Generation)
+  - `smart_logistics` (Intelligent Sorting & Routing)
+  - `advanced_metallurgy` (Heavy Blast Metallurgy)
+  - `energy_storage` (Grid Accumulators)
+  - `heavy_industry` (Precision Heavy Manufacturing)
+  - `synthetic_biofuel` (Hydroponic Cultivation)
+  - `nuclear_power` (Nuclear Fission Power)
+- **Browser Cache Invalidation**:
+  - Bumped asset versioning across `index.html` and ES module imports in `js/main.js` to `?v=31`.
+
+---
+
 ## [1.4.0] - 2026-09-21
 
 ### Added

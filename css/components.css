@@ -620,33 +620,101 @@ body.minimal-hud #hud-restore-pill {
     background: #7F1D1D;
 }
 
-/* Toast Notifications */
+/* Industrial CAD Toast Notifications */
 .toast-container {
     position: fixed;
     top: 50px;
     right: 14px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    z-index: 300;
+    gap: 8px;
+    z-index: 9999;
     pointer-events: none;
+    max-width: 320px;
 }
 
-.toast-card {
-    background: #111620;
-    border: 1px solid #202A38;
+.toast-container svg,
+.toast-card svg,
+.glass-toast svg {
+    width: 18px !important;
+    height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    flex-shrink: 0;
+}
+
+.toast-card, .glass-toast {
+    background: #0D1219;
+    border: 1px solid #1E293B;
     border-left: 3px solid var(--accent-cyan);
     padding: 8px 12px;
     border-radius: var(--radius-xs);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-    font-size: 11px;
-    font-family: var(--font-sans);
-    color: #F8FAFC;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
     pointer-events: auto;
-    animation: toastSlide 0.2s ease;
+    animation: toastSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-@keyframes toastSlide {
-    from { transform: translateX(20px); opacity: 0; }
+.glass-toast.removing, .toast-card.removing {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+@keyframes toastSlideIn {
+    from { transform: translateX(30px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
+}
+
+.toast-icon {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.toast-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    display: block;
+}
+
+.toast-icon.success { color: #10B981; }
+.toast-icon.warning { color: #F59E0B; }
+.toast-icon.info { color: #38BDF8; }
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.toast-title {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: #F8FAFC;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.toast-msg {
+    font-size: 10px;
+    font-family: var(--font-sans);
+    color: #94A3B8;
+    line-height: 1.35;
+    word-break: break-word;
 }

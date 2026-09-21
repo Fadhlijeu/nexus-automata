@@ -44,7 +44,14 @@ export class ModelFactory3D {
             batteryYellow: new THREE.MeshStandardMaterial({ color: 0xEAB308, metalness: 0.75, roughness: 0.25 }),
             chemicalFluid: new THREE.MeshStandardMaterial({ color: 0x06B6D4, emissive: 0x0891B2, emissiveIntensity: 1.4, transparent: true, opacity: 0.85 }),
             glassTube: new THREE.MeshStandardMaterial({ color: 0xBAE6FD, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.45 }),
-            floodlight: new THREE.MeshStandardMaterial({ color: 0xFEF08A, emissive: 0xFDE047, emissiveIntensity: 2.2 })
+            floodlight: new THREE.MeshStandardMaterial({ color: 0xFEF08A, emissive: 0xFDE047, emissiveIntensity: 2.2 }),
+            nuclearCore: new THREE.MeshStandardMaterial({ color: 0x84CC16, emissive: 0x65A30D, emissiveIntensity: 1.8 }),
+            titanium: new THREE.MeshStandardMaterial({ color: 0x94A3B8, metalness: 0.95, roughness: 0.15 }),
+            uranium: new THREE.MeshStandardMaterial({ color: 0xA3E635, emissive: 0x65A30D, emissiveIntensity: 1.5 }),
+            quantumPink: new THREE.MeshStandardMaterial({ color: 0xF43F5E, emissive: 0xE11D48, emissiveIntensity: 1.6 }),
+            crimsonSteel: new THREE.MeshStandardMaterial({ color: 0xDC2626, metalness: 0.7, roughness: 0.35 }),
+            biomassGreen: new THREE.MeshStandardMaterial({ color: 0x16A34A, roughness: 0.6, metalness: 0.1 }),
+            accumulatorBlue: new THREE.MeshStandardMaterial({ color: 0x2563EB, emissive: 0x1D4ED8, emissiveIntensity: 0.8 })
         };
     }
 
@@ -146,8 +153,41 @@ export class ModelFactory3D {
             case 'conveyor_bridge':
                 mesh = this.buildConveyorBridge();
                 break;
+            case 'smart_splitter':
+                mesh = this.buildSmartSplitter();
+                break;
+            case 'long_inserter':
+                mesh = this.buildLongInserter();
+                break;
+            case 'conveyor_lift':
+                mesh = this.buildConveyorLift();
+                break;
+            case 'belt_crossing':
+                mesh = this.buildBeltCrossing();
+                break;
             case 'chemical_plant':
                 mesh = this.buildChemicalPlant();
+                break;
+            case 'foundry':
+                mesh = this.buildFoundry();
+                break;
+            case 'manufacturer':
+                mesh = this.buildManufacturer();
+                break;
+            case 'greenhouse':
+                mesh = this.buildGreenhouse();
+                break;
+            case 'wind_turbine':
+                mesh = this.buildWindTurbine();
+                break;
+            case 'nuclear_reactor':
+                mesh = this.buildNuclearReactor();
+                break;
+            case 'accumulator':
+                mesh = this.buildAccumulator();
+                break;
+            case 'storage_silo_mk2':
+                mesh = this.buildStorageSiloMk2();
                 break;
             default:
                 mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), this.materials.darkSteel);
@@ -980,7 +1020,562 @@ export class ModelFactory3D {
         return group;
     }
 
-    // 17. Surveyor Drone / Builder Bot
+    // 17. Smart Filter Splitter (1x1)
+    buildSmartSplitter() {
+        const group = new THREE.Group();
+        const ts = this.tileSize;
+
+        const chassis = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.94, 0.48, ts * 0.94),
+            this.materials.darkSteel
+        );
+        chassis.position.y = 0.24;
+        chassis.castShadow = true;
+        group.add(chassis);
+
+        // Three output channels: Left, Center, Right
+        const laneGeom = new THREE.BoxGeometry(ts * 0.26, 0.14, 0.22);
+        for (let x of [-ts * 0.3, 0, ts * 0.3]) {
+            const lane = new THREE.Mesh(laneGeom, this.materials.conveyorFast);
+            lane.position.set(x, 0.22, -ts * 0.46);
+            group.add(lane);
+        }
+
+        // Optical Scanner Gantry Arch
+        const arch = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.85, 0.5, 0.12),
+            this.materials.lightSteel
+        );
+        arch.position.set(0, 0.65, 0.1);
+        arch.castShadow = true;
+        group.add(arch);
+
+        // Programmable Optical Filter Lens
+        const lens = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.14, 0.14, 0.08, 12),
+            this.materials.brightCyan
+        );
+        lens.rotation.x = Math.PI / 2;
+        lens.position.set(0, 0.65, 0.17);
+        group.add(lens);
+
+        return group;
+    }
+
+    // 18. Long-Handed Inserter (1x1, 2-tile reach)
+    buildLongInserter() {
+        const group = new THREE.Group();
+        const ts = this.tileSize;
+
+        // Base Turntable Platform (Crimson Steel)
+        const base = new THREE.Mesh(
+            new THREE.CylinderGeometry(ts * 0.4, ts * 0.46, 0.24, 16),
+            this.materials.crimsonSteel
+        );
+        base.position.y = 0.12;
+        base.castShadow = true;
+        group.add(base);
+
+        const armGroup = new THREE.Group();
+        armGroup.name = 'inserterArm';
+        armGroup.position.y = 0.24;
+
+        // Shoulder Pivot Hub
+        const shoulder = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.18, 0.18, 0.3, 12),
+            this.materials.darkSteel
+        );
+        shoulder.rotation.z = Math.PI / 2;
+        shoulder.position.y = 0.16;
+        armGroup.add(shoulder);
+
+        // Telescoping Lower Boom (Extra long reach)
+        const lowerBoom = new THREE.Mesh(
+            new THREE.BoxGeometry(0.14, 1.25, 0.14),
+            this.materials.crimsonSteel
+        );
+        lowerBoom.position.set(0, 0.75, 0.45);
+        lowerBoom.rotation.x = -0.52;
+        lowerBoom.castShadow = true;
+        armGroup.add(lowerBoom);
+
+        // Elbow Joint
+        const elbow = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.14, 0.14, 0.24, 10),
+            this.materials.darkSteel
+        );
+        elbow.rotation.z = Math.PI / 2;
+        elbow.position.set(0, 1.3, 0.82);
+        armGroup.add(elbow);
+
+        // Extended Forearm
+        const foreArm = new THREE.Mesh(
+            new THREE.BoxGeometry(0.11, 1.2, 0.11),
+            this.materials.lightSteel
+        );
+        foreArm.position.set(0, 0.8, 1.35);
+        foreArm.rotation.x = 0.68;
+        foreArm.castShadow = true;
+        armGroup.add(foreArm);
+
+        // Extended Gripper Head
+        const clawHead = new THREE.Mesh(
+            new THREE.BoxGeometry(0.28, 0.1, 0.22),
+            this.materials.crimsonSteel
+        );
+        clawHead.position.set(0, 0.2, 1.88);
+        armGroup.add(clawHead);
+
+        // Held Item Container
+        const clawItem = new THREE.Group();
+        clawItem.name = 'clawItem';
+        clawItem.position.set(0, 0.1, 1.95);
+        clawItem.visible = false;
+        const heldMesh = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.16, 0.22), this.materials.iron);
+        heldMesh.name = 'heldItemMesh';
+        clawItem.add(heldMesh);
+        armGroup.add(clawItem);
+
+        group.add(armGroup);
+        return group;
+    }
+
+    // 19. Conveyor Lift Tower (1x1)
+    buildConveyorLift() {
+        const group = new THREE.Group();
+        const ts = this.tileSize;
+
+        // Base & Top collars
+        for (let y of [0.15, 3.15]) {
+            const collar = new THREE.Mesh(
+                new THREE.BoxGeometry(ts * 0.88, 0.25, ts * 0.88),
+                this.materials.darkSteel
+            );
+            collar.position.y = y;
+            group.add(collar);
+        }
+
+        // 4 Corner Vertical Columns
+        const colGeom = new THREE.BoxGeometry(0.12, 3.0, 0.12);
+        for (let x of [-ts * 0.38, ts * 0.38]) {
+            for (let z of [-ts * 0.38, ts * 0.38]) {
+                const col = new THREE.Mesh(colGeom, this.materials.lightSteel);
+                col.position.set(x, 1.65, z);
+                group.add(col);
+            }
+        }
+
+        // Central Vertical Lift Chute
+        const chute = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.55, 2.9, ts * 0.55),
+            this.materials.glassTube
+        );
+        chute.position.y = 1.65;
+        group.add(chute);
+
+        // Carrier platform inside lift
+        const platform = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.48, 0.15, ts * 0.48),
+            this.materials.industrialYellow
+        );
+        platform.position.y = 1.65;
+        platform.name = 'liftPlatform';
+        group.add(platform);
+
+        return group;
+    }
+
+    // 20. Belt Crossing Junction (1x1)
+    buildBeltCrossing() {
+        const group = new THREE.Group();
+        const ts = this.tileSize;
+
+        // Base plate
+        const base = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.96, 0.1, ts * 0.96),
+            this.materials.darkSteel
+        );
+        base.position.y = 0.05;
+        group.add(base);
+
+        // Ground crossing bed
+        const lowerBed = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.84, 0.08, ts * 0.96),
+            this.materials.conveyorBelt
+        );
+        lowerBed.position.y = 0.1;
+        group.add(lowerBed);
+
+        // Elevated cross bed
+        const upperBed = new THREE.Mesh(
+            new THREE.BoxGeometry(ts * 0.96, 0.08, ts * 0.84),
+            this.materials.conveyorBelt
+        );
+        upperBed.position.y = 0.22;
+        group.add(upperBed);
+
+        // Corner Guides
+        for (let x of [-ts * 0.44, ts * 0.44]) {
+            for (let z of [-ts * 0.44, ts * 0.44]) {
+                const corner = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.32, 0.12), this.materials.hazardStripe);
+                corner.position.set(x, 0.16, z);
+                group.add(corner);
+            }
+        }
+
+        return group;
+    }
+
+    // 21. Heavy Alloy Foundry (3x3)
+    buildFoundry() {
+        const group = new THREE.Group();
+        const size = this.tileSize * 3;
+
+        // Heavy Foundation
+        const base = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.94, 0.35, size * 0.94),
+            this.materials.furnaceBody
+        );
+        base.position.y = 0.175;
+        base.castShadow = true;
+        group.add(base);
+
+        // Dual Blast Furnace Cylinders
+        for (let x of [-size * 0.24, size * 0.24]) {
+            const furnace = new THREE.Mesh(
+                new THREE.CylinderGeometry(size * 0.2, size * 0.25, 2.6, 16),
+                this.materials.furnaceBody
+            );
+            furnace.position.set(x, 1.45, -size * 0.15);
+            furnace.castShadow = true;
+            group.add(furnace);
+
+            // Refractory reinforcement bands
+            for (let y = 0.8; y <= 2.4; y += 0.8) {
+                const band = new THREE.Mesh(
+                    new THREE.TorusGeometry(size * 0.23, 0.04, 6, 16),
+                    this.materials.darkSteel
+                );
+                band.rotation.x = Math.PI / 2;
+                band.position.set(x, y, -size * 0.15);
+                group.add(band);
+            }
+        }
+
+        // Central Molten Slag Runner Channel
+        const runner = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.25, 0.15, size * 0.65),
+            this.materials.moltenCore
+        );
+        runner.position.set(0, 0.38, size * 0.12);
+        runner.name = 'moltenRunner';
+        group.add(runner);
+
+        // Dual Exhaust Stacks
+        for (let x of [-size * 0.24, size * 0.24]) {
+            const stack = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.16, 0.22, 2.2, 10),
+                this.materials.darkSteel
+            );
+            stack.position.set(x, 3.6, -size * 0.15);
+            stack.castShadow = true;
+            group.add(stack);
+        }
+
+        return group;
+    }
+
+    // 22. Precision Manufacturer (3x3)
+    buildManufacturer() {
+        const group = new THREE.Group();
+        const size = this.tileSize * 3;
+
+        // Heavy Foundation
+        const base = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.94, 0.38, size * 0.94),
+            this.materials.darkSteel
+        );
+        base.position.y = 0.19;
+        base.castShadow = true;
+        group.add(base);
+
+        // Heavy Industrial Assembly Hall Structure
+        const hall = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.88, 1.6, size * 0.7),
+            this.materials.lightSteel
+        );
+        hall.position.set(0, 1.15, -size * 0.1);
+        hall.castShadow = true;
+        group.add(hall);
+
+        // Yellow Caution Gantry Roof
+        const roof = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.92, 0.18, size * 0.74),
+            this.materials.hazardStripe
+        );
+        roof.position.set(0, 2.04, -size * 0.1);
+        group.add(roof);
+
+        // 4 Feeder Conveyor Chutes at Rear & Sides
+        for (let x of [-size * 0.35, -size * 0.12, size * 0.12, size * 0.35]) {
+            const chute = new THREE.Mesh(
+                new THREE.BoxGeometry(size * 0.16, 0.28, size * 0.24),
+                this.materials.darkSteel
+            );
+            chute.position.set(x, 0.45, size * 0.35);
+            group.add(chute);
+        }
+
+        // Center Hydraulic Stamping Ram
+        const ram = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.24, 0.24, 0.8, 12),
+            this.materials.titanium
+        );
+        ram.position.set(0, 1.6, size * 0.05);
+        ram.name = 'hydraulicRam';
+        group.add(ram);
+
+        return group;
+    }
+
+    // 23. Hydroponic Bio-Dome (2x2)
+    buildGreenhouse() {
+        const group = new THREE.Group();
+        const size = this.tileSize * 2;
+
+        // Circular Foundation
+        const base = new THREE.Mesh(
+            new THREE.CylinderGeometry(size * 0.46, size * 0.48, 0.3, 24),
+            this.materials.darkSteel
+        );
+        base.position.y = 0.15;
+        group.add(base);
+
+        // Hydroponic Growth Bed
+        const bed = new THREE.Mesh(
+            new THREE.CylinderGeometry(size * 0.42, size * 0.42, 0.12, 20),
+            this.materials.biomassGreen
+        );
+        bed.position.y = 0.35;
+        group.add(bed);
+
+        // Geodesic Glass Dome
+        const dome = new THREE.Mesh(
+            new THREE.SphereGeometry(size * 0.44, 20, 14, 0, Math.PI * 2, 0, Math.PI / 2),
+            new THREE.MeshStandardMaterial({
+                color: 0x6EE7B7,
+                roughness: 0.1,
+                metalness: 0.1,
+                transparent: true,
+                opacity: 0.55
+            })
+        );
+        dome.position.y = 0.3;
+        group.add(dome);
+
+        // Central Violet UV Grow Lamp
+        const uvLamp = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.08, 0.08, 1.4, 8),
+            this.materials.neonPurple
+        );
+        uvLamp.position.y = 1.0;
+        group.add(uvLamp);
+
+        return group;
+    }
+
+    // 24. Aero Wind Turbine (1x1)
+    buildWindTurbine() {
+        const group = new THREE.Group();
+        const ts = this.tileSize;
+
+        // Base Pedestal
+        const base = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.35, 0.5, 0.4, 12),
+            this.materials.darkSteel
+        );
+        base.position.y = 0.2;
+        group.add(base);
+
+        // Slender Composite Mast (Height: 5.5)
+        const mast = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.08, 0.18, 5.2, 12),
+            this.materials.plasticWhite
+        );
+        mast.position.y = 2.8;
+        mast.castShadow = true;
+        group.add(mast);
+
+        // Top Nacelle Generator Pod
+        const nacelle = new THREE.Mesh(
+            new THREE.BoxGeometry(0.28, 0.26, 0.6),
+            this.materials.titanium
+        );
+        nacelle.position.set(0, 5.4, 0.1);
+        group.add(nacelle);
+
+        // Spinning Rotor Group
+        const rotorGroup = new THREE.Group();
+        rotorGroup.name = 'turbineRotor';
+        rotorGroup.position.set(0, 5.4, 0.42);
+
+        // Rotor Hub
+        const hub = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 10), this.materials.industrialCyan);
+        rotorGroup.add(hub);
+
+        // 3 Aerodynamic Blades
+        for (let i = 0; i < 3; i++) {
+            const angle = (i * Math.PI * 2) / 3;
+            const blade = new THREE.Mesh(
+                new THREE.BoxGeometry(0.08, 2.2, 0.04),
+                this.materials.plasticWhite
+            );
+            blade.position.set(Math.sin(angle) * 1.1, Math.cos(angle) * 1.1, 0);
+            blade.rotation.z = -angle;
+            rotorGroup.add(blade);
+        }
+
+        group.add(rotorGroup);
+        return group;
+    }
+
+    // 25. Nuclear Fission Reactor (3x3)
+    buildNuclearReactor() {
+        const group = new THREE.Group();
+        const size = this.tileSize * 3;
+
+        // Concrete Base Platform
+        const base = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.95, 0.4, size * 0.95),
+            this.materials.furnaceBody
+        );
+        base.position.y = 0.2;
+        group.add(base);
+
+        // Massive Hyperboloid Cooling Tower
+        const tower = new THREE.Mesh(
+            new THREE.CylinderGeometry(size * 0.26, size * 0.4, 4.2, 24),
+            this.materials.furnaceBody
+        );
+        tower.position.set(-size * 0.18, 2.3, -size * 0.1);
+        tower.castShadow = true;
+        group.add(tower);
+
+        // Cherenkov Radiation Core Pool inside tower
+        const pool = new THREE.Mesh(
+            new THREE.CylinderGeometry(size * 0.22, size * 0.22, 0.2, 16),
+            this.materials.nuclearCore
+        );
+        pool.position.set(-size * 0.18, 0.5, -size * 0.1);
+        pool.name = 'cherenkovCore';
+        group.add(pool);
+
+        // Reactor Pressure Containment Vessel
+        const vessel = new THREE.Mesh(
+            new THREE.SphereGeometry(size * 0.24, 16, 14, 0, Math.PI * 2, 0, Math.PI / 2),
+            this.materials.darkSteel
+        );
+        vessel.position.set(size * 0.26, 0.4, size * 0.2);
+        group.add(vessel);
+
+        // Control Rod Array Actuators
+        for (let i = -0.15; i <= 0.15; i += 0.15) {
+            const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.2, 8), this.materials.uranium);
+            rod.position.set(size * 0.26 + i, 1.6, size * 0.2);
+            group.add(rod);
+        }
+
+        return group;
+    }
+
+    // 26. Grid Battery Accumulator (2x2)
+    buildAccumulator() {
+        const group = new THREE.Group();
+        const size = this.tileSize * 2;
+
+        // Base
+        const base = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.9, 0.25, size * 0.9),
+            this.materials.darkSteel
+        );
+        base.position.y = 0.125;
+        group.add(base);
+
+        // 4 High-Voltage Capacitors
+        for (let x of [-size * 0.22, size * 0.22]) {
+            for (let z of [-size * 0.22, size * 0.22]) {
+                const cap = new THREE.Mesh(
+                    new THREE.CylinderGeometry(size * 0.16, size * 0.16, 1.8, 14),
+                    this.materials.accumulatorBlue
+                );
+                cap.position.set(x, 1.05, z);
+                cap.castShadow = true;
+                group.add(cap);
+            }
+        }
+
+        // Vertical LED Charge Level Meter (Front Face)
+        const meterGroup = new THREE.Group();
+        meterGroup.name = 'accumulatorMeter';
+        meterGroup.position.set(0, 1.0, size * 0.44);
+
+        for (let i = 0; i < 5; i++) {
+            const led = new THREE.Mesh(
+                new THREE.BoxGeometry(0.4, 0.12, 0.04),
+                this.materials.brightCyan
+            );
+            led.position.y = (i - 2) * 0.22;
+            meterGroup.add(led);
+        }
+        group.add(meterGroup);
+
+        return group;
+    }
+
+    // 27. Heavy Industrial Silo Mk.2 (2x2)
+    buildStorageSiloMk2() {
+        const group = new THREE.Group();
+        const size = this.tileSize * 2;
+
+        // Base Foundation
+        const base = new THREE.Mesh(
+            new THREE.CylinderGeometry(size * 0.44, size * 0.46, 0.35, 20),
+            this.materials.darkSteel
+        );
+        base.position.y = 0.175;
+        group.add(base);
+
+        // Tall Reinforced Tank Body (Height 3.8)
+        const tank = new THREE.Mesh(
+            new THREE.CylinderGeometry(size * 0.4, size * 0.4, 3.8, 20),
+            this.materials.lightSteel
+        );
+        tank.position.y = 2.05;
+        tank.castShadow = true;
+        group.add(tank);
+
+        // Dome Roof
+        const dome = new THREE.Mesh(
+            new THREE.SphereGeometry(size * 0.4, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+            this.materials.darkSteel
+        );
+        dome.position.y = 3.95;
+        group.add(dome);
+
+        // Helical Exterior Maintenance Stairs
+        const steps = 14;
+        for (let i = 0; i < steps; i++) {
+            const angle = (i / steps) * Math.PI * 2.2;
+            const step = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.06, 0.35), this.materials.industrialYellow);
+            step.position.set(Math.cos(angle) * size * 0.44, 0.4 + i * 0.24, Math.sin(angle) * size * 0.44);
+            step.rotation.y = -angle;
+            group.add(step);
+        }
+
+        return group;
+    }
+
+    // 28. Surveyor Drone / Builder Bot
     buildSurveyorDrone() {
         const drone = new THREE.Group();
         drone.name = 'surveyorDrone';
@@ -1010,7 +1605,7 @@ export class ModelFactory3D {
         return drone;
     }
 
-    // 15. 3D Item Models (Physically on Conveyors)
+    // 29. 3D Item Models (Physically on Conveyors)
     createItemMesh(itemType) {
         let geom = null;
         let mat = this.materials.iron;
@@ -1024,6 +1619,14 @@ export class ModelFactory3D {
                 geom = new THREE.BoxGeometry(0.32, 0.12, 0.22);
                 mat = this.materials.copper;
                 break;
+            case 'steel_plate':
+                geom = new THREE.BoxGeometry(0.34, 0.06, 0.34);
+                mat = this.materials.darkSteel;
+                break;
+            case 'titanium_plate':
+                geom = new THREE.BoxGeometry(0.34, 0.06, 0.34);
+                mat = this.materials.titanium;
+                break;
             case 'iron_gear':
                 geom = new THREE.CylinderGeometry(0.16, 0.16, 0.08, 8);
                 mat = this.materials.iron;
@@ -1036,20 +1639,16 @@ export class ModelFactory3D {
                 geom = new THREE.BoxGeometry(0.28, 0.04, 0.28);
                 mat = this.materials.pcbGreen;
                 break;
+            case 'microprocessor':
+                geom = new THREE.BoxGeometry(0.28, 0.05, 0.28);
+                mat = this.materials.brightCyan;
+                break;
             case 'rotor':
                 geom = new THREE.CylinderGeometry(0.14, 0.14, 0.28, 10);
                 mat = this.materials.industrialCyan;
                 break;
-            case 'science_pack_1':
-                geom = new THREE.ConeGeometry(0.14, 0.3, 8);
-                mat = this.materials.glassScience;
-                break;
-            case 'science_pack_2':
-                geom = new THREE.DodecahedronGeometry(0.14, 0);
-                mat = this.materials.neonPurple;
-                break;
-            case 'steel_plate':
-                geom = new THREE.BoxGeometry(0.34, 0.06, 0.34);
+            case 'heavy_frame':
+                geom = new THREE.BoxGeometry(0.35, 0.25, 0.35);
                 mat = this.materials.darkSteel;
                 break;
             case 'plastic':
@@ -1059,6 +1658,38 @@ export class ModelFactory3D {
             case 'battery':
                 geom = new THREE.CylinderGeometry(0.12, 0.12, 0.28, 12);
                 mat = this.materials.batteryYellow;
+                break;
+            case 'fuel_rod':
+                geom = new THREE.CylinderGeometry(0.1, 0.1, 0.32, 10);
+                mat = this.materials.uranium;
+                break;
+            case 'science_pack_1':
+                geom = new THREE.ConeGeometry(0.14, 0.3, 8);
+                mat = this.materials.glassScience;
+                break;
+            case 'science_pack_2':
+                geom = new THREE.DodecahedronGeometry(0.14, 0);
+                mat = this.materials.neonPurple;
+                break;
+            case 'space_capsule':
+                geom = new THREE.ConeGeometry(0.18, 0.38, 8);
+                mat = this.materials.quantumPink;
+                break;
+            case 'quantum_cube':
+                geom = new THREE.BoxGeometry(0.25, 0.25, 0.25);
+                mat = this.materials.quantumPink;
+                break;
+            case 'biomass':
+                geom = new THREE.SphereGeometry(0.16, 8, 8);
+                mat = this.materials.biomassGreen;
+                break;
+            case 'titanium_ore':
+                geom = new THREE.DodecahedronGeometry(0.16, 0);
+                mat = this.materials.titanium;
+                break;
+            case 'uranium_ore':
+                geom = new THREE.OctahedronGeometry(0.16, 0);
+                mat = this.materials.uranium;
                 break;
             default:
                 geom = new THREE.DodecahedronGeometry(0.14, 0);
