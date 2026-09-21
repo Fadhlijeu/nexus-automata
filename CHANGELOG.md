@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0] - 2026-09-21
+
+### Added
+- **Authentic Open-Source 3D Model Integration (Kenney CC0 Public Domain)**:
+  - Replaced procedural scratch-built primitive models with 180 imported open-source 3D GLB assets from Kenney CC0 Factory and Industrial Kits.
+  - Built an asynchronous Three.js `GLTFLoader` pipeline with deep shadow casting and receiving, runtime geometry cloning, and instant mesh updates.
+  - Fully upgraded all building and tool models:
+    - `belt` & `fast_belt`: imported `conveyor.glb` & `conveyor-stripe.glb` with moving industrial chevron tread textures.
+    - `splitter` & `merger`: imported `conveyor-cross.glb` and `conveyor-junction-t.glb`.
+    - `smart_splitter`: imported `conveyor-cross.glb` combined with `scanner-low.glb`.
+    - `inserter`, `fast_inserter`, and `long_inserter`: imported `robot-arm-a.glb` and `robot-arm-b.glb` with dynamic swinging and item container parenting.
+    - `smelter`: imported `machine.glb` with `chimney-large.glb` and pulsating molten hearth.
+    - `assembler`: imported `machine-bed.glb` and articulated `robot-arm-b.glb`.
+    - `foundry`: imported `machine-fortified.glb` with dual `chimney-large.glb` and molten slag runner channel.
+    - `manufacturer`: imported `machine-fortified.glb` with pneumatic `piston-round.glb` and industrial manifold pipes.
+    - `chemical_plant`: imported `detail-tank-large.glb`, `chimney-medium.glb`, and bioluminescent fluid reaction column.
+    - `coal_generator`: imported `building-a.glb` and `chimney-large.glb`.
+    - `solar_panel`: imported `solar-panel-landscape-group.glb`.
+    - `wind_turbine`: imported `windmill.glb` with spinning aerodynamic 3-blade rotor hub.
+    - `nuclear_reactor`: imported `building-f.glb`, `detail-tank-large.glb`, and glowing Cherenkov radiation core pool.
+    - `storage_silo` & `storage_silo_mk2`: imported `detail-tank-large.glb` and `hopper-high-round.glb`.
+    - `research_lab`: imported `building-c.glb` with twin rotating holographic quantum rings.
+    - `demolish`: 3D demolition drone with twin emitter lasers and plasma core.
+- **Real 3D Tool & Building Forms in UI (Replaced Flat 2D Icons)**:
+  - Eliminated flat 2D icons in the hotbar dock; slots now display the actual 3D model form of each tool and building rendered offscreen via Three.js with studio 3-point lighting and isometric camera framing.
+  - Hotbar hover tooltips display a large high-resolution 3D model preview with subtle elevation and soft glow.
+  - Technology tree research cards display 3D model previews of each technology's unlocked building.
+- **Completed Machine Diagnostics & Inspector Controls**:
+  - Machine Inspector modal now features an illuminated 3D hero model of the inspected facility.
+  - Added complete diagnostics and recipe selection for `foundry`, `manufacturer`, and `greenhouse` with live input/output buffers and crafting cycle progress meters.
+  - Added programmable Left and Right sorting filter selectors for `smart_splitter`.
+  - Added battery reserve gauge meter (`XXXX / 5000 kJ`) and grid transfer status for `accumulator`.
+  - Added uranium fuel rod burn timer and +280 kW power output meter for `nuclear_reactor`.
+  - Added coal fuel burn timer and +50 kW power output meter for `coal_generator`.
+  - Added itemized storage breakdown and capacity tracking for `storage_silo` and `storage_silo_mk2`.
+- **Precision Pipette Tool (`Q`)**:
+  - Fixed cursor coordinate sampling so pressing `Q` samples the exact building directly beneath the mouse pointer.
+  - Automatically synchronizes active category tabs and highlights the selected tool in the hotbar dock.
+- **Cache Invalidation & Version Bump**:
+  - Bumped to `v=32` across CSS and ES module imports, package version 1.6.0.
+
+---
+
 ## [1.5.0] - 2026-09-21
 
 ### Fixed

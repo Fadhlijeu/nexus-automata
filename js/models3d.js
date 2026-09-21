@@ -4,6 +4,7 @@
  */
 
 import * as THREE from '../libs/three.module.js';
+import { GLTFLoader } from '../libs/GLTFLoader.js';
 
 export class ModelFactory3D {
     constructor() {
@@ -53,6 +54,191 @@ export class ModelFactory3D {
             biomassGreen: new THREE.MeshStandardMaterial({ color: 0x16A34A, roughness: 0.6, metalness: 0.1 }),
             accumulatorBlue: new THREE.MeshStandardMaterial({ color: 0x2563EB, emissive: 0x1D4ED8, emissiveIntensity: 0.8 })
         };
+
+        // Open-Source 3D GLB Loader & Model Cache (Kenney CC0 Assets)
+        this.loader = new GLTFLoader();
+        this.modelsGLB = new Map();
+        this.thumbnails = new Map();
+        this.modelsLoaded = false;
+        this.loadOpenSourceModels();
+    }
+
+    loadOpenSourceModels(onReady) {
+        const assets = {
+            conveyor: 'assets/models/conveyor.glb',
+            conveyor_stripe: 'assets/models/conveyor-stripe.glb',
+            conveyor_cross: 'assets/models/conveyor-cross.glb',
+            conveyor_junction: 'assets/models/conveyor-junction-t.glb',
+            robot_arm_a: 'assets/models/robot-arm-a.glb',
+            robot_arm_b: 'assets/models/robot-arm-b.glb',
+            machine: 'assets/models/machine.glb',
+            machine_fortified: 'assets/models/machine-fortified.glb',
+            machine_bed: 'assets/models/machine-bed.glb',
+            machine_pipe: 'assets/models/machine-connection-pipe.glb',
+            tank_large: 'assets/models/detail-tank-large.glb',
+            tank_small: 'assets/models/detail-tank.glb',
+            chimney_large: 'assets/models/chimney-large.glb',
+            chimney_medium: 'assets/models/chimney-medium.glb',
+            building_a: 'assets/models/building-a.glb',
+            building_b: 'assets/models/building-b.glb',
+            building_c: 'assets/models/building-c.glb',
+            building_f: 'assets/models/building-f.glb',
+            hopper_round: 'assets/models/hopper-high-round.glb',
+            hopper_square: 'assets/models/hopper-high-square.glb',
+            scanner_low: 'assets/models/scanner-low.glb',
+            piston_round: 'assets/models/piston-round.glb',
+            crane: 'assets/models/crane.glb',
+            solar_panel: 'assets/models/solar-panel-landscape-group.glb',
+            windmill: 'assets/models/windmill.glb',
+            water_tower: 'assets/models/water-tower.glb',
+            shipping_container: 'assets/models/shipping-container-a.glb'
+        };
+
+        const keys = Object.keys(assets);
+        let loadedCount = 0;
+
+        keys.forEach(key => {
+            this.loader.load(
+                assets[key],
+                (gltf) => {
+                    const scene = gltf.scene;
+                    scene.traverse((node) => {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                        }
+                    });
+                    this.modelsGLB.set(key, scene);
+                    loadedCount++;
+                    if (loadedCount === keys.length) {
+                        this.modelsLoaded = true;
+                        this.thumbnails.clear();
+                        if (this.onLoaded) this.onLoaded();
+                        if (onReady) onReady();
+                    }
+                },
+                undefined,
+                () => {
+                    loadedCount++;
+                    if (loadedCount === keys.length) {
+                        this.modelsLoaded = true;
+                        this.thumbnails.clear();
+                        if (this.onLoaded) this.onLoaded();
+                        if (onReady) onReady();
+                    }
+                }
+            );
+        });
+    }
+
+    cloneModel(key) {
+        if (!this.modelsGLB.has(key)) return null;
+        const original = this.modelsGLB.get(key);
+        return original.clone(true);
+    }
+
+    initThumbnailRenderer() {
+        if (this.thumbRenderer) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = 120;
+        canvas.height = 120;
+        this.thumbRenderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true,
+            antialias: true,
+            preserveDrawingBuffer: true
+        });
+        this.thumbRenderer.setSize(120, 120);
+        this.thumbRenderer.setPixelRatio(1);
+        this.thumbRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.thumbRenderer.toneMappingExposure = 1.35;
+
+        this.thumbScene = new THREE.Scene();
+        
+        const amb = new THREE.AmbientLight(0xFFFFFF, 1.4);
+        this.thumbScene.add(amb);
+
+        const keyLight = new THREE.DirectionalLight(0xFDE047, 2.5);
+        keyLight.position.set(5, 9, 6);
+        this.thumbScene.add(keyLight);
+
+        const fillLight = new THREE.DirectionalLight(0x38BDF8, 1.6);
+        fillLight.position.set(-6, 4, -5);
+        this.thumbScene.add(fillLight);
+
+        const topRim = new THREE.DirectionalLight(0xFFFFFF, 1.1);
+        topRim.position.set(0, 10, 0);
+        this.thumbScene.add(topRim);
+
+        this.thumbCamera = new THREE.PerspectiveCamera(34, 1, 0.2, 50);
+        this.thumbObjHolder = new THREE.Group();
+        this.thumbScene.add(this.thumbObjHolder);
+    }
+
+    generateThumbnail(type, size = 1) {
+        if (this.thumbnails.has(type)) {
+            return this.thumbnails.get(type);
+        }
+
+        this.initThumbnailRenderer();
+
+        while (this.thumbObjHolder.children.length > 0) {
+            this.thumbObjHolder.remove(this.thumbObjHolder.children[0]);
+        }
+
+        let mesh = null;
+        if (type === 'select') {
+            mesh = this.buildSurveyorDrone();
+        } else if (type === 'demolish') {
+            mesh = this.buildDemolisherDrone();
+        } else {
+            mesh = this.createBuildingMesh(type, 0, size);
+        }
+
+        this.thumbObjHolder.add(mesh);
+
+        const bbox = new THREE.Box3().setFromObject(mesh);
+        const center = bbox.getCenter(new THREE.Vector3());
+        const bsize = bbox.getSize(new THREE.Vector3());
+        const maxDim = Math.max(bsize.x, bsize.y, bsize.z, 1.2);
+
+        mesh.position.sub(center);
+
+        const dist = maxDim * 2.15;
+        this.thumbCamera.position.set(dist * 0.92, dist * 0.85, dist * 0.92);
+        this.thumbCamera.lookAt(0, 0, 0);
+
+        this.thumbRenderer.render(this.thumbScene, this.thumbCamera);
+        const dataUrl = this.thumbRenderer.domElement.toDataURL('image/png');
+        this.thumbnails.set(type, dataUrl);
+        return dataUrl;
+    }
+
+    buildDemolisherDrone() {
+        const drone = new THREE.Group();
+        const body = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, 0.25, 0.5),
+            this.materials.darkSteel
+        );
+        body.position.y = 0.8;
+        body.castShadow = true;
+        drone.add(body);
+
+        const laser = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.06, 0.06, 0.4, 8),
+            this.materials.crimsonSteel
+        );
+        laser.rotation.x = Math.PI / 2;
+        laser.position.set(0, 0.8, 0.28);
+        drone.add(laser);
+
+        const beam = new THREE.Mesh(
+            new THREE.SphereGeometry(0.08, 8, 8),
+            this.materials.quantumPink
+        );
+        beam.position.set(0, 0.8, 0.5);
+        drone.add(beam);
+        return drone;
     }
 
     createBeltTexture(isFast) {
@@ -209,7 +395,22 @@ export class ModelFactory3D {
         const ts = this.tileSize;
         const beltMat = isFast ? this.materials.conveyorFast : this.materials.conveyorBelt;
 
-        // Base frame bed
+        // Open-Source Kenney 3D Model Integration
+        const glb = this.cloneModel(isFast ? 'conveyor_stripe' : 'conveyor');
+        if (glb) {
+            glb.scale.set(ts * 0.96, ts * 0.96, ts * 0.96);
+            glb.position.set(0, 0, 0);
+            group.add(glb);
+
+            // Animated surface overlay
+            const bedGeom = new THREE.BoxGeometry(ts * 0.58, 0.04, ts * 0.98);
+            const bedMesh = new THREE.Mesh(bedGeom, beltMat);
+            bedMesh.position.y = 0.28;
+            group.add(bedMesh);
+            return group;
+        }
+
+        // Base frame bed fallback
         const bedGeom = new THREE.BoxGeometry(ts * 0.88, 0.12, ts * 0.98);
         const bedMesh = new THREE.Mesh(bedGeom, beltMat);
         bedMesh.position.y = 0.06;
@@ -246,6 +447,25 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
+        const glb = this.cloneModel('conveyor_cross');
+        if (glb) {
+            glb.scale.set(ts * 0.92, ts * 0.92, ts * 0.92);
+            group.add(glb);
+
+            const arch = new THREE.Mesh(
+                new THREE.BoxGeometry(ts * 0.72, 0.4, 0.14),
+                this.materials.industrialYellow
+            );
+            arch.position.set(0, 0.55, 0);
+            arch.castShadow = true;
+            group.add(arch);
+
+            const led = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), this.materials.neonPurple);
+            led.position.set(0, 0.8, 0);
+            group.add(led);
+            return group;
+        }
+
         const chassis = new THREE.Mesh(
             new THREE.BoxGeometry(ts * 0.94, 0.45, ts * 0.94),
             this.materials.darkSteel
@@ -276,6 +496,21 @@ export class ModelFactory3D {
     buildMerger() {
         const group = new THREE.Group();
         const ts = this.tileSize;
+
+        const glb = this.cloneModel('conveyor_junction');
+        if (glb) {
+            glb.scale.set(ts * 0.92, ts * 0.92, ts * 0.92);
+            group.add(glb);
+
+            const arch = new THREE.Mesh(
+                new THREE.BoxGeometry(ts * 0.72, 0.4, 0.14),
+                this.materials.industrialCyan
+            );
+            arch.position.set(0, 0.55, 0);
+            arch.castShadow = true;
+            group.add(arch);
+            return group;
+        }
 
         const body = new THREE.Mesh(
             new THREE.BoxGeometry(ts * 0.92, 0.4, ts * 0.92),
@@ -374,8 +609,31 @@ export class ModelFactory3D {
     buildSmelter() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+        const machineGlb = this.cloneModel('machine');
+        const chimneyGlb = this.cloneModel('chimney_large');
 
-        // Furnace Main Body
+        if (machineGlb) {
+            machineGlb.scale.set(size * 0.55, size * 0.55, size * 0.55);
+            machineGlb.position.set(0, 0, 0);
+            group.add(machineGlb);
+
+            if (chimneyGlb) {
+                chimneyGlb.scale.set(size * 0.38, size * 0.45, size * 0.38);
+                chimneyGlb.position.set(0, 0.75, -size * 0.22);
+                group.add(chimneyGlb);
+            }
+
+            const hearth = new THREE.Mesh(
+                new THREE.BoxGeometry(size * 0.4, 0.28, 0.18),
+                this.materials.moltenCore
+            );
+            hearth.position.set(0, 0.38, size * 0.35);
+            hearth.name = 'moltenHearth';
+            group.add(hearth);
+            return group;
+        }
+
+        // Furnace Main Body Fallback
         const furnace = new THREE.Mesh(
             new THREE.BoxGeometry(size * 0.88, 1.2, size * 0.88),
             this.materials.furnaceBody
@@ -394,7 +652,7 @@ export class ModelFactory3D {
         hearth.name = 'moltenHearth';
         group.add(hearth);
 
-        // Twin Smokestacks (Points for billowing smoke)
+        // Twin Smokestacks
         const chimneyGeom = new THREE.CylinderGeometry(0.2, 0.26, 1.4, 10);
         const c1 = new THREE.Mesh(chimneyGeom, this.materials.darkSteel);
         c1.position.set(-size * 0.25, 1.6, -size * 0.22);
@@ -413,8 +671,23 @@ export class ModelFactory3D {
     buildAssembler() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+        const bedGlb = this.cloneModel('machine_bed');
+        const armGlb = this.cloneModel('robot_arm_b');
 
-        // Workshop Base & Walls
+        if (bedGlb) {
+            bedGlb.scale.set(size * 0.55, size * 0.55, size * 0.55);
+            group.add(bedGlb);
+
+            if (armGlb) {
+                armGlb.scale.set(size * 0.42, size * 0.42, size * 0.42);
+                armGlb.position.set(0, 0.4, 0);
+                armGlb.name = 'robotArm';
+                group.add(armGlb);
+            }
+            return group;
+        }
+
+        // Workshop Base & Walls Fallback
         const base = new THREE.Mesh(
             new THREE.BoxGeometry(size * 0.9, 0.8, size * 0.9),
             this.materials.darkSteel
@@ -453,7 +726,6 @@ export class ModelFactory3D {
         armPivot.add(claw);
 
         group.add(armPivot);
-
         return group;
     }
 
@@ -461,6 +733,20 @@ export class ModelFactory3D {
     buildCoalGenerator() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+        const buildingGlb = this.cloneModel('building_a');
+        const chimneyGlb = this.cloneModel('chimney_large');
+
+        if (buildingGlb) {
+            buildingGlb.scale.set(size * 0.48, size * 0.48, size * 0.48);
+            group.add(buildingGlb);
+
+            if (chimneyGlb) {
+                chimneyGlb.scale.set(size * 0.4, size * 0.45, size * 0.4);
+                chimneyGlb.position.set(size * 0.22, 1.0, -size * 0.22);
+                group.add(chimneyGlb);
+            }
+            return group;
+        }
 
         const boiler = new THREE.Mesh(
             new THREE.CylinderGeometry(size * 0.38, size * 0.38, 1.6, 16),
@@ -495,6 +781,14 @@ export class ModelFactory3D {
     buildSolarPanel() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+
+        const glb = this.cloneModel('solar_panel');
+        if (glb) {
+            glb.scale.set(size * 0.46, size * 0.46, size * 0.46);
+            glb.position.set(0, 0, 0);
+            group.add(glb);
+            return group;
+        }
 
         const base = new THREE.Mesh(
             new THREE.BoxGeometry(size * 0.88, 0.15, size * 0.88),
@@ -545,7 +839,7 @@ export class ModelFactory3D {
         // High-Mast Downward Floodlight Reflector Fixtures
         const lampHousing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.1, 0.2), this.materials.darkSteel);
         lampHousing.position.set(0, 3.75, 0.15);
-        lampHousing.rotation.x = 0.45; // angled downwards
+        lampHousing.rotation.x = 0.45;
         group.add(lampHousing);
 
         const lampBulb = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.04, 0.16), this.materials.floodlight);
@@ -553,7 +847,7 @@ export class ModelFactory3D {
         lampBulb.rotation.x = 0.45;
         group.add(lampBulb);
 
-        // Ground illumination point light for dramatic night atmosphere
+        // Ground illumination point light
         const floodLight = new THREE.PointLight(0xFDE047, 0.85, 15, 2.0);
         floodLight.position.set(0, 3.5, 0.2);
         group.add(floodLight);
@@ -565,6 +859,13 @@ export class ModelFactory3D {
     buildStorageSilo() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+        const tankGlb = this.cloneModel('tank_large');
+
+        if (tankGlb) {
+            tankGlb.scale.set(size * 0.58, size * 0.58, size * 0.58);
+            group.add(tankGlb);
+            return group;
+        }
 
         const cylinder = new THREE.Mesh(
             new THREE.CylinderGeometry(size * 0.42, size * 0.42, 2.2, 18),
@@ -589,6 +890,23 @@ export class ModelFactory3D {
     buildResearchLab() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+        const buildingGlb = this.cloneModel('building_c');
+
+        if (buildingGlb) {
+            buildingGlb.scale.set(size * 0.52, size * 0.52, size * 0.52);
+            group.add(buildingGlb);
+
+            const ring1 = new THREE.Mesh(new THREE.TorusGeometry(size * 0.35, 0.04, 6, 24), this.materials.brightCyan);
+            ring1.position.y = 2.4;
+            ring1.name = 'orbitRing1';
+            group.add(ring1);
+
+            const ring2 = new THREE.Mesh(new THREE.TorusGeometry(size * 0.42, 0.03, 6, 24), this.materials.neonPurple);
+            ring2.position.y = 2.4;
+            ring2.name = 'orbitRing2';
+            group.add(ring2);
+            return group;
+        }
 
         const base = new THREE.Mesh(
             new THREE.CylinderGeometry(size * 0.45, size * 0.48, 0.5, 16),
@@ -606,7 +924,7 @@ export class ModelFactory3D {
         core.position.y = 1.2;
         group.add(core);
 
-        // 3 Concentric Holographic Orbital Rings (Animated)
+        // Holographic Orbital Rings
         const ringGeom = new THREE.TorusGeometry(size * 0.36, 0.04, 8, 32);
         const r1 = new THREE.Mesh(ringGeom, this.materials.brightCyan);
         r1.name = 'orbitRing1';
@@ -772,6 +1090,47 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
+        const armGlb = this.cloneModel(isFast ? 'robot_arm_b' : 'robot_arm_a');
+        if (armGlb) {
+            const base = new THREE.Mesh(
+                new THREE.CylinderGeometry(ts * 0.36, ts * 0.44, 0.22, 16),
+                this.materials.darkSteel
+            );
+            base.position.y = 0.11;
+            base.castShadow = true;
+            group.add(base);
+
+            const ringMat = isFast ? this.materials.neonPurple : this.materials.industrialYellow;
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(ts * 0.38, 0.04, 8, 20),
+                ringMat
+            );
+            ring.rotation.x = Math.PI / 2;
+            ring.position.y = 0.2;
+            group.add(ring);
+
+            const armGroup = new THREE.Group();
+            armGroup.name = 'inserterArm';
+            armGroup.position.y = 0.22;
+
+            armGlb.scale.set(ts * 0.65, ts * 0.65, ts * 0.65);
+            armGlb.position.set(0, 0, 0);
+            armGroup.add(armGlb);
+
+            const clawItem = new THREE.Group();
+            clawItem.name = 'clawItem';
+            clawItem.position.set(0, 0.2, 0.75);
+            clawItem.visible = false;
+            
+            const heldMesh = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.16, 0.22), this.materials.iron);
+            heldMesh.name = 'heldItemMesh';
+            clawItem.add(heldMesh);
+            armGroup.add(clawItem);
+
+            group.add(armGroup);
+            return group;
+        }
+
         // Base Turntable Platform
         const base = new THREE.Mesh(
             new THREE.CylinderGeometry(ts * 0.36, ts * 0.44, 0.22, 16),
@@ -875,6 +1234,40 @@ export class ModelFactory3D {
     buildChemicalPlant() {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
+
+        const tankGlb = this.cloneModel('tank_large');
+        const chimneyGlb = this.cloneModel('chimney_medium');
+        if (tankGlb) {
+            tankGlb.scale.set(size * 0.5, size * 0.55, size * 0.5);
+            tankGlb.position.set(-size * 0.2, 0, -size * 0.15);
+            group.add(tankGlb);
+
+            if (chimneyGlb) {
+                chimneyGlb.scale.set(size * 0.35, size * 0.5, size * 0.35);
+                chimneyGlb.position.set(size * 0.28, 0.8, -size * 0.2);
+                group.add(chimneyGlb);
+            }
+
+            // Bioluminescent Fluid Reaction Vessel (Glass Tube + Glowing Core)
+            const fluidGroup = new THREE.Group();
+            fluidGroup.position.set(size * 0.2, 1.1, size * 0.22);
+
+            const fluidCore = new THREE.Mesh(
+                new THREE.CylinderGeometry(size * 0.12, size * 0.12, 1.8, 16),
+                this.materials.chemicalFluid
+            );
+            fluidCore.name = 'fluidVessel';
+            fluidGroup.add(fluidCore);
+
+            const glassSheath = new THREE.Mesh(
+                new THREE.CylinderGeometry(size * 0.14, size * 0.14, 1.95, 16),
+                this.materials.glassTube
+            );
+            fluidGroup.add(glassSheath);
+            group.add(fluidGroup);
+
+            return group;
+        }
 
         // Base Heavy Industry Foundation Platform
         const platform = new THREE.Mesh(
@@ -1025,6 +1418,20 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
+        const crossGlb = this.cloneModel('conveyor_cross');
+        const scannerGlb = this.cloneModel('scanner_low');
+        if (crossGlb) {
+            crossGlb.scale.set(ts * 0.94, ts * 0.94, ts * 0.94);
+            group.add(crossGlb);
+
+            if (scannerGlb) {
+                scannerGlb.scale.set(ts * 0.65, ts * 0.65, ts * 0.65);
+                scannerGlb.position.set(0, 0.4, 0);
+                group.add(scannerGlb);
+            }
+            return group;
+        }
+
         const chassis = new THREE.Mesh(
             new THREE.BoxGeometry(ts * 0.94, 0.48, ts * 0.94),
             this.materials.darkSteel
@@ -1066,6 +1473,37 @@ export class ModelFactory3D {
     buildLongInserter() {
         const group = new THREE.Group();
         const ts = this.tileSize;
+
+        const armGlb = this.cloneModel('robot_arm_a');
+        if (armGlb) {
+            const base = new THREE.Mesh(
+                new THREE.CylinderGeometry(ts * 0.4, ts * 0.46, 0.24, 16),
+                this.materials.crimsonSteel
+            );
+            base.position.y = 0.12;
+            base.castShadow = true;
+            group.add(base);
+
+            const armGroup = new THREE.Group();
+            armGroup.name = 'inserterArm';
+            armGroup.position.y = 0.24;
+
+            armGlb.scale.set(ts * 0.8, ts * 0.8, ts * 1.3);
+            armGlb.position.set(0, 0, 0.15);
+            armGroup.add(armGlb);
+
+            const clawItem = new THREE.Group();
+            clawItem.name = 'clawItem';
+            clawItem.position.set(0, 0.25, 1.4);
+            clawItem.visible = false;
+            const heldMesh = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.16, 0.22), this.materials.iron);
+            heldMesh.name = 'heldItemMesh';
+            clawItem.add(heldMesh);
+            armGroup.add(clawItem);
+
+            group.add(armGroup);
+            return group;
+        }
 
         // Base Turntable Platform (Crimson Steel)
         const base = new THREE.Mesh(
@@ -1231,6 +1669,36 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
 
+        const machineGlb = this.cloneModel('machine_fortified');
+        const chimneyGlb = this.cloneModel('chimney_large');
+        if (machineGlb) {
+            machineGlb.scale.set(size * 0.58, size * 0.58, size * 0.58);
+            machineGlb.position.set(0, 0, 0);
+            group.add(machineGlb);
+
+            if (chimneyGlb) {
+                const c1 = chimneyGlb.clone(true);
+                c1.scale.set(size * 0.32, size * 0.48, size * 0.32);
+                c1.position.set(-size * 0.28, 1.0, -size * 0.25);
+                group.add(c1);
+
+                const c2 = chimneyGlb.clone(true);
+                c2.scale.set(size * 0.32, size * 0.48, size * 0.32);
+                c2.position.set(size * 0.28, 1.0, -size * 0.25);
+                group.add(c2);
+            }
+
+            const runner = new THREE.Mesh(
+                new THREE.BoxGeometry(size * 0.28, 0.15, size * 0.62),
+                this.materials.moltenCore
+            );
+            runner.position.set(0, 0.38, size * 0.2);
+            runner.name = 'moltenRunner';
+            group.add(runner);
+
+            return group;
+        }
+
         // Heavy Foundation
         const base = new THREE.Mesh(
             new THREE.BoxGeometry(size * 0.94, 0.35, size * 0.94),
@@ -1289,6 +1757,29 @@ export class ModelFactory3D {
     buildManufacturer() {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
+
+        const machineGlb = this.cloneModel('machine_fortified');
+        const pistonGlb = this.cloneModel('piston_round');
+        const pipeGlb = this.cloneModel('machine_pipe');
+
+        if (machineGlb) {
+            machineGlb.scale.set(size * 0.62, size * 0.6, size * 0.62);
+            group.add(machineGlb);
+
+            if (pistonGlb) {
+                pistonGlb.scale.set(size * 0.45, size * 0.45, size * 0.45);
+                pistonGlb.position.set(0, 1.2, 0);
+                pistonGlb.name = 'hydraulicRam';
+                group.add(pistonGlb);
+            }
+
+            if (pipeGlb) {
+                pipeGlb.scale.set(size * 0.45, size * 0.45, size * 0.45);
+                pipeGlb.position.set(size * 0.3, 0.5, 0);
+                group.add(pipeGlb);
+            }
+            return group;
+        }
 
         // Heavy Foundation
         const base = new THREE.Mesh(
@@ -1389,6 +1880,31 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const ts = this.tileSize;
 
+        const glb = this.cloneModel('windmill');
+        if (glb) {
+            glb.scale.set(ts * 0.72, ts * 0.72, ts * 0.72);
+            glb.position.set(0, 0, 0);
+            group.add(glb);
+
+            const rotorGroup = new THREE.Group();
+            rotorGroup.name = 'turbineRotor';
+            rotorGroup.position.set(0, 4.2, 0.35);
+            const hub = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 10), this.materials.industrialCyan);
+            rotorGroup.add(hub);
+            for (let i = 0; i < 3; i++) {
+                const angle = (i * Math.PI * 2) / 3;
+                const blade = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.08, 1.8, 0.04),
+                    this.materials.plasticWhite
+                );
+                blade.position.set(Math.sin(angle) * 0.9, Math.cos(angle) * 0.9, 0);
+                blade.rotation.z = -angle;
+                rotorGroup.add(blade);
+            }
+            group.add(rotorGroup);
+            return group;
+        }
+
         // Base Pedestal
         const base = new THREE.Mesh(
             new THREE.CylinderGeometry(0.35, 0.5, 0.4, 12),
@@ -1443,6 +1959,31 @@ export class ModelFactory3D {
     buildNuclearReactor() {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
+
+        const buildingGlb = this.cloneModel('building_f');
+        const tankGlb = this.cloneModel('tank_large');
+
+        if (buildingGlb) {
+            buildingGlb.scale.set(size * 0.55, size * 0.55, size * 0.55);
+            buildingGlb.position.set(0, 0, 0);
+            group.add(buildingGlb);
+
+            if (tankGlb) {
+                tankGlb.scale.set(size * 0.38, size * 0.45, size * 0.38);
+                tankGlb.position.set(size * 0.26, 0.4, size * 0.2);
+                group.add(tankGlb);
+            }
+
+            const pool = new THREE.Mesh(
+                new THREE.CylinderGeometry(size * 0.22, size * 0.22, 0.2, 16),
+                this.materials.nuclearCore
+            );
+            pool.position.set(-size * 0.18, 0.6, -size * 0.1);
+            pool.name = 'cherenkovCore';
+            group.add(pool);
+
+            return group;
+        }
 
         // Concrete Base Platform
         const base = new THREE.Mesh(
@@ -1536,6 +2077,22 @@ export class ModelFactory3D {
     buildStorageSiloMk2() {
         const group = new THREE.Group();
         const size = this.tileSize * 2;
+
+        const tankGlb = this.cloneModel('tank_large');
+        const hopperGlb = this.cloneModel('hopper_round');
+
+        if (tankGlb) {
+            tankGlb.scale.set(size * 0.62, size * 0.78, size * 0.62);
+            tankGlb.position.set(0, 0, 0);
+            group.add(tankGlb);
+
+            if (hopperGlb) {
+                hopperGlb.scale.set(size * 0.38, size * 0.38, size * 0.38);
+                hopperGlb.position.set(0, 2.6, 0);
+                group.add(hopperGlb);
+            }
+            return group;
+        }
 
         // Base Foundation
         const base = new THREE.Mesh(

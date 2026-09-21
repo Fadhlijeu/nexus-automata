@@ -229,10 +229,25 @@ export class UIController {
             const powerMeta = b.powerNeed ? `• Power: ${b.powerNeed} kW` : (b.powerGen ? `• Gen: +${b.powerGen} kW` : '');
             const speedMeta = b.speed ? `• Speed: ${b.speed} tiles/s` : '';
 
+            // Generate authentic 3D model thumbnail
+            let modelThumb = null;
+            if (this.renderer?.factory) {
+                modelThumb = this.renderer.factory.generateThumbnail(b.id, b.size || 1);
+            }
+
+            const modelDisplayHtml = modelThumb
+                ? `<div class="slot-3d-model"><img src="${modelThumb}" alt="${b.name}" class="slot-model-img" /></div>`
+                : `<div class="slot-icon">${this.getBuildingIconSVG(b.id)}</div>`;
+
+            const tooltip3DHtml = modelThumb
+                ? `<div class="tooltip-3d-preview"><img src="${modelThumb}" class="tooltip-model-img" alt="${b.name}" /></div>`
+                : '';
+
             slot.innerHTML = `
                 <span class="slot-key">${keyNumber <= 9 ? keyNumber : ''}</span>
-                <div class="slot-icon">${this.getBuildingIconSVG(b.id)}</div>
+                ${modelDisplayHtml}
                 <div class="slot-tooltip">
+                    ${tooltip3DHtml}
                     <div class="tooltip-header">
                         <span class="tooltip-name">${b.name}</span>
                         <span class="tooltip-key">[${keyNumber <= 9 ? keyNumber : ''}]</span>
@@ -365,15 +380,34 @@ export class UIController {
         const bodyEl = document.getElementById('inspector-body');
         if (!bodyEl) return;
 
+        // 3D Hero Visual Preview of Inspected Building
+        let hero3DHtml = '';
+        if (this.renderer?.factory) {
+            const thumbUrl = this.renderer.factory.generateThumbnail(b.type, b.size || 1);
+            hero3DHtml = `
+                <div class="inspector-hero">
+                    <img src="${thumbUrl}" class="inspector-hero-img" alt="${b.def.name}" />
+                    <div class="inspector-hero-info">
+                        <span class="inspector-hero-title">${b.def.name}</span>
+                        <span class="inspector-hero-category">${(b.def.category || 'INDUSTRIAL').toUpperCase()} • FOOTPRINT ${b.size}×${b.size}</span>
+                    </div>
+                </div>
+            `;
+        }
+
         // Machine status label
         let statusBadge = `<span style="color: #10B981;">● Operational</span>`;
         if (b.status === 'no_power') statusBadge = `<span style="color: #EF4444;">● No Power (Connect to Grid)</span>`;
         else if (b.status === 'waiting_inputs') statusBadge = `<span style="color: #F59E0B;">● Waiting for Recipe Inputs</span>`;
         else if (b.status === 'blocked') statusBadge = `<span style="color: #F59E0B;">● Output Obstructed</span>`;
-        else if (b.status === 'no_fuel') statusBadge = `<span style="color: #EF4444;">● Out of Coal Fuel</span>`;
+        else if (b.status === 'no_fuel') statusBadge = `<span style="color: #EF4444;">● Out of Fuel</span>`;
+        else if (b.status === 'no_ore') statusBadge = `<span style="color: #EF4444;">● No Resource Node</span>`;
+        else if (b.status === 'charging') statusBadge = `<span style="color: #38BDF8;">⚡ Accumulating Power</span>`;
+        else if (b.status === 'discharging') statusBadge = `<span style="color: #F59E0B;">⚡ Discharging Grid Power</span>`;
 
         let html = `
-            <div class="inspector-grid">
+            ${hero3DHtml}
+            <div class="inspector-grid" style="margin-top: 8px;">
                 <div class="inspector-card">
                     <span class="card-label">Current Status</span>
                     <span class="card-val" style="font-size: 13px;">${statusBadge}</span>
@@ -385,21 +419,22 @@ export class UIController {
             </div>
         `;
 
-        // If Smelter, Assembler, or Chemical Plant: show recipe selector and progress
-        if (b.type === 'smelter' || b.type === 'assembler' || b.type === 'chemical_plant') {
+        // 1. Smelter, Assembler, Chemical Plant, Foundry, Manufacturer, Greenhouse
+        if (b.type === 'smelter' || b.type === 'assembler' || b.type === 'chemical_plant' || 
+            b.type === 'foundry' || b.type === 'manufacturer' || b.type === 'greenhouse') {
             const applicableRecipes = Object.values(RECIPES).filter(r => r.machine === b.type);
             
             html += `
-                <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
                     <span class="card-label">Select Active Recipe</span>
-                    <select id="recipe-select" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border-side); color: #fff; padding: 8px 12px; border-radius: 8px; font-family: var(--font-sans);">
+                    <select id="recipe-select" class="inspector-select" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border-side); color: #fff; padding: 8px 12px; border-radius: 8px; font-family: var(--font-sans);">
                         ${applicableRecipes.map(r => `
                             <option value="${r.id}" ${b.recipe === r.id ? 'selected' : ''}>${r.name}</option>
                         `).join('')}
                     </select>
                 </div>
 
-                <div class="glass-progress-wrapper">
+                <div class="glass-progress-wrapper" style="margin-top: 8px;">
                     <div class="glass-progress-label">
                         <span>Crafting Cycle Progress</span>
                         <span>${Math.round(b.progress * 100)}%</span>
@@ -409,7 +444,7 @@ export class UIController {
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 14px;">
+                <div style="display: flex; gap: 14px; margin-top: 8px;">
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
                         <span class="card-label">Input Buffer</span>
                         <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -437,7 +472,9 @@ export class UIController {
                     </div>
                 </div>
             `;
-        } else if (b.type === 'inserter' || b.type === 'fast_inserter') {
+        } 
+        // 2. Robotic Inserters (Standard, Fast, Long-Handed)
+        else if (b.type === 'inserter' || b.type === 'fast_inserter' || b.type === 'long_inserter') {
             html += `
                 <div class="inspector-card" style="margin-top: 8px;">
                     <span class="card-label">Gripper Arm Status</span>
@@ -455,25 +492,161 @@ export class UIController {
                     </select>
                 </div>
             `;
-        } else if (b.type === 'storage_silo') {
+        }
+        // 3. Smart Filter Splitter
+        else if (b.type === 'smart_splitter') {
             html += `
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <span class="card-label">Silo Contents (Capacity 250)</span>
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                        ${Object.entries(b.inventory.inputs).length === 0 ? '<span style="font-size: 11px; color: var(--text-dim);">Empty</span>' : ''}
-                        ${Object.entries(b.inventory.inputs).map(([item, count]) => `
-                            <div class="item-slot-display">
-                                <span class="item-slot-name">${ITEMS[item]?.name || item}</span>
-                                <span class="item-slot-count">x${count}</span>
-                            </div>
-                        `).join('')}
+                <div class="inspector-card" style="margin-top: 8px;">
+                    <span class="card-label">Optical High-Speed Sorter</span>
+                    <span class="card-val" style="font-size: 12px; color: var(--accent-cyan);">Left / Straight / Right Programmable Logic</span>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 8px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                        <span class="card-label">Left Channel Filter</span>
+                        <select id="splitter-filter-left" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border-side); color: #fff; padding: 8px 10px; border-radius: 8px; font-family: var(--font-sans); font-size: 12px;">
+                            <option value="" ${!b.filterLeft ? 'selected' : ''}>Any / Pass-through</option>
+                            ${Object.values(ITEMS).map(it => `
+                                <option value="${it.id}" ${b.filterLeft === it.id ? 'selected' : ''}>${it.name}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                        <span class="card-label">Right Channel Filter</span>
+                        <select id="splitter-filter-right" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border-side); color: #fff; padding: 8px 10px; border-radius: 8px; font-family: var(--font-sans); font-size: 12px;">
+                            <option value="" ${!b.filterRight ? 'selected' : ''}>Any / Pass-through</option>
+                            ${Object.values(ITEMS).map(it => `
+                                <option value="${it.id}" ${b.filterRight === it.id ? 'selected' : ''}>${it.name}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+        // 4. Power Accumulator
+        else if (b.type === 'accumulator') {
+            const stored = Math.round(b.storedEnergy || 0);
+            const cap = b.def.powerCapacity || 5000;
+            const pct = Math.round((stored / cap) * 100);
+            html += `
+                <div class="glass-progress-wrapper" style="margin-top: 10px;">
+                    <div class="glass-progress-label">
+                        <span>High-Voltage Capacitor Reserve</span>
+                        <span style="color: var(--accent-cyan); font-weight: 700;">${stored} / ${cap} kJ (${pct}%)</span>
+                    </div>
+                    <div class="glass-progress-track">
+                        <div class="glass-progress-fill" style="width: ${pct}%; background: linear-gradient(90deg, #0284C7, #38BDF8);"></div>
+                    </div>
+                </div>
+                <div class="inspector-grid" style="margin-top: 8px;">
+                    <div class="inspector-card">
+                        <span class="card-label">Grid Mode</span>
+                        <span class="card-val" style="font-size: 13px; color: ${b.status === 'charging' ? '#10B981' : (b.status === 'discharging' ? '#F59E0B' : '#94A3B8')}">
+                            ${(b.status || 'STANDBY').toUpperCase()}
+                        </span>
+                    </div>
+                    <div class="inspector-card">
+                        <span class="card-label">Max Transfer Rate</span>
+                        <span class="card-val">${b.def.chargeRate || 75} kW</span>
+                    </div>
+                </div>
+            `;
+        }
+        // 5. Nuclear Fission Reactor
+        else if (b.type === 'nuclear_reactor') {
+            const burnTime = Math.ceil(b.fuelTime || 0);
+            const fuelCount = b.inventory.inputs['fuel_rod'] || 0;
+            html += `
+                <div class="inspector-grid" style="margin-top: 8px;">
+                    <div class="inspector-card">
+                        <span class="card-label">Fission Core Output</span>
+                        <span class="card-val" style="color: #84CC16;">+280 kW</span>
+                    </div>
+                    <div class="inspector-card">
+                        <span class="card-label">Current Rod Remaining</span>
+                        <span class="card-val">${burnTime > 0 ? `${burnTime}s` : 'Depleted'}</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    <span class="card-label">Uranium Fuel Rods in Core Reserve</span>
+                    <div class="item-slot-display">
+                        <span class="item-slot-name">Uranium Fuel Rod</span>
+                        <span class="item-slot-count">x${fuelCount}</span>
+                    </div>
+                </div>
+            `;
+        }
+        // 6. Coal Power Plant
+        else if (b.type === 'coal_generator') {
+            const burnTime = Math.ceil(b.fuelTime || 0);
+            const coalCount = b.inventory.inputs['coal'] || 0;
+            html += `
+                <div class="inspector-grid" style="margin-top: 8px;">
+                    <div class="inspector-card">
+                        <span class="card-label">Turbine Gen Output</span>
+                        <span class="card-val" style="color: #F59E0B;">+50 kW</span>
+                    </div>
+                    <div class="inspector-card">
+                        <span class="card-label">Combustion Remaining</span>
+                        <span class="card-val">${burnTime > 0 ? `${burnTime}s` : 'Extinguished'}</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    <span class="card-label">Coal Intake Hopper</span>
+                    <div class="item-slot-display">
+                        <span class="item-slot-name">Coal Fuel</span>
+                        <span class="item-slot-count">x${coalCount}</span>
+                    </div>
+                </div>
+            `;
+        }
+        // 7. Storage Silos (Standard & Mk.2)
+        else if (b.type === 'storage_silo' || b.type === 'storage_silo_mk2') {
+            const cap = b.def.capacity || (b.type === 'storage_silo_mk2' ? 800 : 250);
+            let total = 0;
+            Object.values(b.inventory.inputs).forEach(cnt => total += cnt);
+            html += `
+                <div class="glass-progress-wrapper" style="margin-top: 8px;">
+                    <div class="glass-progress-label">
+                        <span>Total Buffer Contents</span>
+                        <span style="color: var(--accent-cyan); font-weight: 700;">${total} / ${cap} Items</span>
+                    </div>
+                    <div class="glass-progress-track">
+                        <div class="glass-progress-fill" style="width: ${Math.min(100, Math.round((total / cap) * 100))}%"></div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 180px; overflow-y: auto;">
+                    ${Object.entries(b.inventory.inputs).length === 0 ? '<span style="font-size: 11px; color: var(--text-dim);">Empty Silo Buffer</span>' : ''}
+                    ${Object.entries(b.inventory.inputs).map(([item, count]) => `
+                        <div class="item-slot-display">
+                            <span class="item-slot-name">${ITEMS[item]?.name || item}</span>
+                            <span class="item-slot-count">x${count}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        // 8. Wind Turbine & Solar Panel
+        else if (b.type === 'wind_turbine' || b.type === 'solar_panel') {
+            const gen = b.def.powerGen || (b.type === 'wind_turbine' ? 15 : 20);
+            html += `
+                <div class="inspector-grid" style="margin-top: 8px;">
+                    <div class="inspector-card">
+                        <span class="card-label">Clean Energy Generation</span>
+                        <span class="card-val" style="color: #10B981;">+${gen} kW</span>
+                    </div>
+                    <div class="inspector-card">
+                        <span class="card-label">Emission Rate</span>
+                        <span class="card-val" style="color: #10B981;">0.00 CO₂</span>
                     </div>
                 </div>
             `;
         }
 
         // Satisfactory-Style Machine Overclocking Control
-        if (b.def.powerNeed !== undefined || b.type === 'miner' || b.type === 'smelter' || b.type === 'assembler' || b.type === 'chemical_plant' || b.type === 'inserter' || b.type === 'fast_inserter') {
+        if (b.def.powerNeed !== undefined || b.type === 'miner' || b.type === 'smelter' || 
+            b.type === 'assembler' || b.type === 'chemical_plant' || b.type === 'foundry' || 
+            b.type === 'manufacturer' || b.type === 'greenhouse' || b.type === 'inserter' || 
+            b.type === 'fast_inserter' || b.type === 'long_inserter') {
             const basePower = b.def.powerNeed || 0;
             const clock = b.clockSpeed || 1.0;
             const currentPower = Math.round(basePower * Math.pow(clock, 1.6) * 10) / 10;
@@ -520,12 +693,28 @@ export class UIController {
             });
         }
 
-        // Filter item change listener
+        // Filter item change listener (Inserters)
         const filterSelect = document.getElementById('inserter-filter-select');
         if (filterSelect) {
             filterSelect.addEventListener('change', (e) => {
                 sound.playClick();
                 b.filterItem = e.target.value || null;
+            });
+        }
+
+        // Smart Splitter Left & Right filter listeners
+        const filterLeftSelect = document.getElementById('splitter-filter-left');
+        if (filterLeftSelect) {
+            filterLeftSelect.addEventListener('change', (e) => {
+                sound.playClick();
+                b.filterLeft = e.target.value || null;
+            });
+        }
+        const filterRightSelect = document.getElementById('splitter-filter-right');
+        if (filterRightSelect) {
+            filterRightSelect.addEventListener('change', (e) => {
+                sound.playClick();
+                b.filterRight = e.target.value || null;
             });
         }
 
@@ -586,9 +775,20 @@ export class UIController {
 
             const costText = Object.entries(tech.cost).map(([item, count]) => `${count}x ${ITEMS[item]?.name || item}`).join(', ') || 'Free';
 
+            // Display 3D model of primary unlocked tech
+            const unlockBuildingId = tech.unlocks?.find(u => BUILDINGS[u]);
+            let visualBoxHtml = '';
+            if (unlockBuildingId && this.renderer?.factory) {
+                const bDef = BUILDINGS[unlockBuildingId];
+                const thumbUrl = this.renderer.factory.generateThumbnail(unlockBuildingId, bDef?.size || 1);
+                visualBoxHtml = `<div class="tech-3d-thumb"><img src="${thumbUrl}" alt="${tech.name}" class="tech-model-img" /></div>`;
+            } else {
+                visualBoxHtml = `<div class="tech-icon-box">${this.getBuildingIconSVG(tech.iconCode || 'assembler')}</div>`;
+            }
+
             card.innerHTML = `
                 <div class="tech-info">
-                    <div class="tech-icon-box">${this.getBuildingIconSVG(tech.iconCode || 'assembler')}</div>
+                    ${visualBoxHtml}
                     <div class="tech-texts">
                         <span class="tech-name">${tech.name} ${isUnlocked ? '[RESEARCHED]' : ''}</span>
                         <span class="tech-desc">${tech.description}</span>

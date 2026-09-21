@@ -134,6 +134,107 @@
     height: 22px;
 }
 
+.slot-3d-model {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot-model-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7));
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+}
+
+.dock-slot:hover .slot-model-img {
+    transform: scale(1.18) translateY(-2px);
+    filter: drop-shadow(0 6px 12px rgba(56, 189, 248, 0.45));
+}
+
+.tooltip-3d-preview {
+    width: 72px;
+    height: 72px;
+    margin: 2px auto 6px auto;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(14, 19, 26, 0) 70%);
+    border-radius: var(--radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip-model-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.8));
+}
+
+.tech-3d-thumb {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 165, 233, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: var(--radius-xs);
+    padding: 2px;
+}
+
+.tech-model-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6));
+}
+
+/* Inspector 3D Hero Preview */
+.inspector-hero {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border: 1px solid #1F2A3A;
+    border-radius: var(--radius-xs);
+    padding: 10px 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.inspector-hero-img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.75));
+    border-radius: var(--radius-xs);
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, rgba(15, 23, 42, 0) 70%);
+}
+
+.inspector-hero-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.inspector-hero-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #F8FAFC;
+    letter-spacing: 0.3px;
+}
+
+.inspector-hero-category {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 0.8px;
+}
+
 /* Precision Industrial Tooltip (Hover above hotbar) */
 .slot-tooltip {
     position: absolute;

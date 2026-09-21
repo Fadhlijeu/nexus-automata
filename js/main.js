@@ -3,12 +3,12 @@
  * Nexus Automata (Three.js 3D Engine)
  */
 
-import { WorldGrid } from './grid.js?v=31';
-import { SimulationEngine } from './simulation.js?v=31';
-import { Renderer3D } from './renderer3d.js?v=31';
-import { UIController } from './ui.js?v=31';
-import { DIRECTIONS, BUILDINGS, TECH_TREE } from './data.js?v=31';
-import { sound } from './audio.js?v=31';
+import { WorldGrid } from './grid.js?v=32';
+import { SimulationEngine } from './simulation.js?v=32';
+import { Renderer3D } from './renderer3d.js?v=32';
+import { UIController } from './ui.js?v=32';
+import { DIRECTIONS, BUILDINGS, TECH_TREE } from './data.js?v=32';
+import { sound } from './audio.js?v=32';
 
 class GameApp {
     constructor() {
@@ -20,6 +20,18 @@ class GameApp {
         this.sim = new SimulationEngine(this.grid, (evt, data) => this.handleSimEvent(evt, data));
         this.renderer = new Renderer3D(this.canvas, this.grid, this.sim);
         this.ui = new UIController(this.grid, this.sim, this.renderer);
+
+        // Hook GLB model loading to refresh existing buildings & thumbnails
+        this.renderer.factory.onLoaded = () => {
+            this.renderer.refreshAllBuildings();
+            this.ui.renderDock();
+            this.ui.renderTechTree();
+        };
+        if (this.renderer.factory.modelsLoaded) {
+            this.renderer.refreshAllBuildings();
+            this.ui.renderDock();
+            this.ui.renderTechTree();
+        }
 
         this.buildDirection = DIRECTIONS.NORTH;
         this.isOrbiting = false;
@@ -352,6 +364,7 @@ class GameApp {
             if (e.button === 2) {
                 this.isOrbiting = true;
                 this.mousePos = { x: e.clientX, y: e.clientY };
+                this.prevMousePos = { x: e.clientX, y: e.clientY };
                 this.canvasContainer.classList.add('panning');
                 return;
             }
@@ -360,6 +373,7 @@ class GameApp {
             if (e.button === 1) {
                 this.isPanning = true;
                 this.mousePos = { x: e.clientX, y: e.clientY };
+                this.prevMousePos = { x: e.clientX, y: e.clientY };
                 this.canvasContainer.classList.add('panning');
                 return;
             }
@@ -375,10 +389,12 @@ class GameApp {
 
         // Mouse Move
         window.addEventListener('mousemove', (e) => {
+            this.mousePos = { x: e.clientX, y: e.clientY };
+
             if (this.isOrbiting) {
-                const dx = e.clientX - this.mousePos.x;
-                const dy = e.clientY - this.mousePos.y;
-                this.mousePos = { x: e.clientX, y: e.clientY };
+                const dx = e.clientX - this.prevMousePos.x;
+                const dy = e.clientY - this.prevMousePos.y;
+                this.prevMousePos = { x: e.clientX, y: e.clientY };
 
                 this.renderer.camYaw -= dx * 0.006;
                 this.renderer.camPitch = Math.max(0.25, Math.min(1.4, this.renderer.camPitch + dy * 0.006));
@@ -387,9 +403,9 @@ class GameApp {
             }
 
             if (this.isPanning) {
-                const dx = (e.clientX - this.mousePos.x) * 0.15;
-                const dy = (e.clientY - this.mousePos.y) * 0.15;
-                this.mousePos = { x: e.clientX, y: e.clientY };
+                const dx = (e.clientX - this.prevMousePos.x) * 0.15;
+                const dy = (e.clientY - this.prevMousePos.y) * 0.15;
+                this.prevMousePos = { x: e.clientX, y: e.clientY };
 
                 const sinYaw = Math.sin(this.renderer.camYaw);
                 const cosYaw = Math.cos(this.renderer.camYaw);
@@ -446,18 +462,26 @@ class GameApp {
             if (e.key.toLowerCase() === 'r') {
                 sound.playRotate();
                 this.buildDirection = (this.buildDirection + 1) % 4;
-                const hit = this.renderer.screenToTile(window.innerWidth / 2, window.innerHeight / 2);
+                const hit = this.renderer.screenToTile(this.mousePos.x, this.mousePos.y);
                 this.renderer.setGhost(this.ui.selectedTool, hit.tileX, hit.tileY, this.buildDirection);
             }
 
-            // Q: Pipet
+            // Q: Pipet Eyedropper Tool (Sample building directly under cursor)
             if (e.key.toLowerCase() === 'q') {
-                const hit = this.renderer.screenToTile(window.innerWidth / 2, window.innerHeight / 2);
+                const hit = this.renderer.screenToTile(this.mousePos.x, this.mousePos.y);
                 const hovered = this.grid.getBuilding(hit.tileX, hit.tileY);
-                if (hovered) {
+                if (hovered && BUILDINGS[hovered.type]) {
                     sound.playClick();
+                    const bDef = BUILDINGS[hovered.type];
+                    if (bDef.category && bDef.category !== this.ui.selectedCategory) {
+                        this.ui.selectedCategory = bDef.category;
+                        document.querySelectorAll('.dock-pill-btn').forEach(btn => {
+                            btn.classList.toggle('active', btn.dataset.category === bDef.category);
+                        });
+                    }
                     this.ui.selectedTool = hovered.type;
                     this.ui.renderDock();
+                    this.ui.showToast('Pipette Sampled', `Equipped ${bDef.name}`, 'info');
                 }
             }
 

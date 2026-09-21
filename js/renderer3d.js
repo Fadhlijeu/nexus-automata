@@ -272,6 +272,13 @@ export class Renderer3D {
         }
     }
 
+    refreshAllBuildings() {
+        this.buildingMeshes.forEach((mesh) => {
+            this.scene.remove(mesh);
+        });
+        this.buildingMeshes.clear();
+    }
+
     syncBuildings(dt) {
         const currentIds = new Set();
         const ts = this.tileSize;
