@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] - 2026-09-21
+
+### Added
+- **Tactical CAD Industrial HUD Overhaul (Anti-Glassmorphism)**:
+  - Complete elimination of blurry glassmorphism, transparent bubble filters, and unconstrained text inside slots in favor of a gritty, precision-engineered industrial CAD interface inspired by *Satisfactory*, *Factorio*, and *Shapez 2*.
+  - **Clean Hotbar Slots**: Compact 48×48px matte carbon slots with crisp SVG building icons and corner hotkey indicators `[1-8]`.
+  - **Precision Hover Tooltips**: Floating technical info cards rendered *above* the hotbar showing building name, hotkey, resource cost (e.g. `1× iron ingot`), power demand/generation (`kW`), speed, and operational description with zero text spill or overlapping.
+  - **Docked Industrial Category Tabs**: Flush category tabs (`LOGISTICS`, `PRODUCTION`, `POWER GRID`, `SPECIALIZED`, `TOOLS`) docked directly on top of the hotbar dock, with full keyboard `Tab` cycle navigation.
+  - **Collapsible Survey Radar**: Added a minimize toggle (`_` / `+`) to the 80x80 survey radar header to collapse the minimap canvas and free up top-right screen real estate on demand.
+  - **Docked Bottom-Right Status Controls**: Converted floating controls panel into a sleek, non-intrusive 24px docked status strip with click-to-collapse functionality.
+  - **Full Cinematic HUD Toggle**: Added an Eye icon button to the top HUD and keyboard shortcut `H` to toggle minimal HUD mode, hiding all interface elements for 100% unobstructed 3D megafactory observation with a subtle restore banner.
+
+### Fixed
+- **Blank Screen Root Cause**: Restored essential `libs/three.core.js` module dependency required by `three.module.js`, guaranteeing reliable scene initialization and preventing 404 module import failures.
+- **Three.js Shadow Map Deprecation**: Upgraded shadow map configuration from deprecated `PCFSoftShadowMap` to `PCFShadowMap`, eliminating WebGL console warnings.
+- **Aggressive Browser Cache Invalidation**: Synchronized all CSS stylesheets and ES module imports to `?v=30`, ensuring instant update propagation across all browser sessions without stale cached script collisions.
+
+---
+
 ## [1.3.0] - 2026-09-21
 
 ### Added

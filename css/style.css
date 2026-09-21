@@ -1,10 +1,7 @@
 /**
- * Main Layout & Canvas Styles
- * Nexus Automata - Factory Simulation Web Game
+ * Main Layout & Industrial Factory Console Styles
+ * Nexus Automata — Industrial CAD & Tactical Simulation HUD
  */
-
-@import url('glass-tokens.css');
-@import url('components.css');
 
 * {
     box-sizing: border-box;
@@ -23,57 +20,7 @@ html, body {
     font-family: var(--font-sans);
 }
 
-/* Background Atmosphere Blobs */
-.aurora-bg {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-}
-
-.aurora-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.15;
-    animation: blobFloat 20s infinite alternate ease-in-out;
-}
-
-.blob-1 {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, #22D3EE, #4A9EFF);
-    top: -150px;
-    left: -150px;
-}
-
-.blob-2 {
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, #A855F7, #6366F1);
-    bottom: -200px;
-    right: -200px;
-    animation-delay: -7s;
-}
-
-.blob-3 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #10B981, #06B6D4);
-    bottom: 20%;
-    left: 10%;
-    animation-delay: -14s;
-    opacity: 0.08;
-}
-
-@keyframes blobFloat {
-    0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(60px, 40px) scale(1.1); }
-    100% { transform: translate(-40px, 80px) scale(0.95); }
-}
-
-/* Simulation Canvas Container */
+/* Simulation 3D Canvas Container */
 #game-canvas-container {
     position: fixed;
     inset: 0;
@@ -99,29 +46,26 @@ html, body {
     height: 100%;
 }
 
-/* Edge Vignette */
+/* Subtle Industrial Vignette */
 .screen-vignette {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 20;
-    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
+    z-index: 15;
+    box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.45);
 }
 
-/* Minimap Glass Container */
+/* Tactical Minimap Radar */
 .minimap-glass {
     position: fixed;
-    top: 76px;
-    right: 20px;
-    width: 160px;
-    height: 160px;
-    border-radius: var(--radius-lg);
-    background: var(--glass-panel);
-    backdrop-filter: var(--blur-glass-light);
-    -webkit-backdrop-filter: var(--blur-glass-light);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: var(--shadow-glass);
+    top: 54px;
+    right: 14px;
+    width: 144px;
+    height: 136px;
+    border-radius: var(--radius-sm);
+    background: #0B0E14;
+    border: 1px solid #1F2736;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
     overflow: hidden;
     z-index: 80;
     display: flex;
@@ -133,40 +77,39 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 10px;
-    font-size: 10px;
-    font-weight: 600;
+    padding: 5px 8px;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    font-weight: 700;
     color: var(--text-muted);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: #121822;
+    border-bottom: 1px solid #1F2736;
 }
 
 #minimap-canvas {
     width: 100%;
     height: 100%;
-    background: #06070B;
+    background: #07090E;
 }
 
-/* Floating Tooltip Specular */
+/* Precision Tooltip */
 .game-tooltip {
     position: fixed;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    background: rgba(14, 16, 24, 0.92);
-    backdrop-filter: var(--blur-glass-standard);
-    -webkit-backdrop-filter: var(--blur-glass-standard);
-    border: 1px solid var(--glass-border-top);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(74, 158, 255, 0.2);
+    padding: 6px 10px;
+    border-radius: var(--radius-xs);
+    background: #111620;
+    border: 1px solid #293548;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
     font-size: 11px;
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     color: var(--text-primary);
     pointer-events: none;
     z-index: 400;
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 0.15s, transform 0.15s;
+    transition: opacity 0.12s, transform 0.12s;
     white-space: nowrap;
 }
 
@@ -175,92 +118,83 @@ html, body {
     transform: translateY(0);
 }
 
-/* Milestone Banner */
+/* Integrated Header Milestone Widget */
 .milestone-banner {
-    position: fixed;
-    top: 76px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 8px 20px;
-    border-radius: var(--radius-full);
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: var(--blur-glass-standard);
-    -webkit-backdrop-filter: var(--blur-glass-standard);
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    border-top-color: rgba(56, 189, 248, 0.7);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.25);
     display: flex;
     align-items: center;
-    gap: 12px;
-    z-index: 90;
-    pointer-events: auto;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: var(--radius-xs);
+    background: #121822;
+    border: 1px solid #243042;
     cursor: pointer;
-    transition: all 0.25s var(--ease-spring);
+    transition: all 0.2s;
 }
 
 .milestone-banner:hover {
-    transform: translateX(-50%) translateY(-2px);
     border-color: var(--accent-cyan);
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 28px rgba(56, 189, 248, 0.4);
+    background: #17202E;
 }
 
 .milestone-banner .milestone-target {
-    font-size: 12px;
-    font-weight: 600;
-    color: #FFFFFF;
-}
-
-.milestone-banner .milestone-progress {
+    font-size: 11px;
     font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--accent-cyan);
+    font-weight: 600;
+    color: #E2E8F0;
+    letter-spacing: 0.2px;
 }
 
-/* Cinematic Flyby Mode Floating Badge */
+/* Cinematic Camera Indicator */
 .cinematic-hud-pill {
     position: fixed;
-    top: 124px;
+    top: 54px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 8px 20px;
-    border-radius: var(--radius-full);
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: var(--blur-glass-heavy);
-    -webkit-backdrop-filter: var(--blur-glass-heavy);
-    border: 1px solid rgba(14, 165, 233, 0.6);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 24px rgba(14, 165, 233, 0.4);
+    padding: 6px 16px;
+    border-radius: var(--radius-xs);
+    background: #0F172A;
+    border: 1px solid #0284C7;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 12px;
+    gap: 10px;
+    font-size: 11px;
+    font-family: var(--font-mono);
     font-weight: 700;
-    letter-spacing: 0.6px;
-    color: #FFFFFF;
+    letter-spacing: 0.5px;
+    color: #38BDF8;
     z-index: 200;
     pointer-events: none;
-    animation: fadeInSlideDown 0.3s ease;
-}
-
-@keyframes fadeInSlideDown {
-    from { opacity: 0; transform: translate(-50%, -10px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .cinematic-pulse-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: #EF4444;
-    box-shadow: 0 0 10px #EF4444;
-    animation: recordingPulse 1.2s infinite ease-in-out;
+    background: #38BDF8;
+    box-shadow: 0 0 8px #38BDF8;
+    animation: pulseDot 1.2s infinite ease-in-out;
 }
 
-@keyframes recordingPulse {
+@keyframes pulseDot {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
+    50% { opacity: 0.3; transform: scale(0.7); }
 }
 
-@keyframes fadeInSlideUp {
-    from { opacity: 0; transform: translate(-50%, 10px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
+/* Diagnostics Hover Badge */
+.world-hover-badge {
+    position: fixed;
+    padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    background: rgba(11, 14, 20, 0.95);
+    border: 1px solid #293548;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+    pointer-events: none;
+    z-index: 85;
+    white-space: nowrap;
+    transform: translate(-50%, -100%) translateY(-12px);
+    transition: opacity 0.1s;
 }

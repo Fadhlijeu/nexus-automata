@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Automata — 3D Factory Simulation</title>
     <meta name="description" content="3D industrial automation and logistics factory simulator with realistic terrain, dynamic shadows, and high-performance Three.js engine.">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/glass-tokens.css?v=30">
+    <link rel="stylesheet" href="css/components.css?v=30">
+    <link rel="stylesheet" href="css/style.css?v=30">
     <script type="importmap">
     {
       "imports": {
@@ -48,18 +50,23 @@
         </div>
 
         <div class="hud-center-group">
-            <!-- Speed controls -->
-            <div class="dock-category-pills" style="padding: 2px 4px;">
+            <!-- Planetary Milestone Objective Indicator -->
+            <div id="milestone-banner" class="milestone-banner" title="Click to view Planetary Milestones">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2.5"><path d="M12 2v20M8 8l4-6 4 6M6 18l6 4 6-4"/></svg>
+                <span id="milestone-target-text" class="milestone-target">Phase I: Foundational Foundry: 0 / 20 Iron Ingot</span>
+            </div>
+        </div>
+
+        <div class="hud-right-group">
+            <!-- Simulation speed controls -->
+            <div class="hud-speed-group">
                 <button class="dock-pill-btn speed-btn" data-speed="0" title="Pause simulation">PAUSE</button>
                 <button class="dock-pill-btn speed-btn active" data-speed="1" title="1x Speed">1X</button>
                 <button class="dock-pill-btn speed-btn" data-speed="2" title="2x Fast Forward">2X</button>
                 <button class="dock-pill-btn speed-btn" data-speed="5" title="5x Hyper Speed">5X</button>
             </div>
-        </div>
-
-        <div class="hud-right-group">
             <button id="hud-atmo-btn" class="hud-btn" title="Cycle Atmosphere (Day / Sunset / Night)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/>
                     <line x1="12" y1="21" x2="12" y2="23"/>
@@ -72,24 +79,30 @@
                 </svg>
             </button>
             <button id="hud-cinema-btn" class="hud-btn" title="Toggle Cinematic Flyby Camera (C)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="23 7 16 12 23 17 23 7"/>
                     <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
                 </svg>
             </button>
             <button id="hud-tech-btn" class="hud-btn" title="Open Technology Research Tree (E)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M10 2v7.31L4.5 19a2 2 0 001.72 3h15.56a2 2 0 001.72-3L14 9.31V2"/>
                 </svg>
             </button>
             <button id="hud-audio-btn" class="hud-btn active" title="Toggle Synthesizer Sound">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                     <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
                 </svg>
             </button>
+            <button id="hud-toggle-btn" class="hud-btn" title="Toggle HUD Display (H)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
             <button id="hud-settings-btn" class="hud-btn" title="Save, Load, and Controls">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="3"/>
                     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
                 </svg>
@@ -97,36 +110,41 @@
         </div>
     </header>
 
+    <!-- Hidden HUD Restore Pill -->
+    <div id="hud-restore-pill" class="hud-restore-pill" style="display: none;" title="Click or press H to show HUD">
+        <span>HUD HIDDEN — Press [H] to restore</span>
+    </div>
+
     <!-- Cinematic Flyby Mode Floating Badge -->
     <div id="cinematic-hud-pill" class="cinematic-hud-pill" style="display: none;">
         <span class="cinematic-pulse-dot"></span>
         <span>CINEMATIC FLYBY — Press C or WASD to exit</span>
     </div>
 
-    <!-- Planetary Milestone Banner -->
-    <div id="milestone-banner" class="milestone-banner" title="Click to view Planetary Milestones">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2"><path d="M12 2v20M8 8l4-6 4 6M6 18l6 4 6-4"/></svg>
-        <span id="milestone-target-text" class="milestone-target">Phase I: Foundational Foundry</span>
-    </div>
-
-    <!-- Minimap Radar Overlay -->
+    <!-- Minimap Radar Overlay (Collapsible) -->
     <aside class="minimap-glass">
         <div class="minimap-header">
             <span>SURVEY RADAR</span>
-            <span style="color: var(--accent-cyan);">80x80 3D</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="color: var(--accent-cyan); font-size: 8px;">80x80</span>
+                <button id="minimap-toggle-btn" class="minimap-toggle-btn" title="Collapse / Expand Radar">_</button>
+            </div>
         </div>
         <canvas id="minimap-canvas" width="160" height="134"></canvas>
     </aside>
 
-    <!-- Keyboard Hotkey Overlay Hint -->
-    <div class="controls-hint-panel">
-        <span><span class="key-pill">WASD</span> Pan</span>
-        <span><span class="key-pill">Right Click</span> Orbit</span>
-        <span><span class="key-pill">Scroll</span> Zoom</span>
-        <span><span class="key-pill">C</span> Cinema</span>
-        <span><span class="key-pill">R</span> Rotate</span>
-        <span><span class="key-pill">Q</span> Pipet</span>
-        <span><span class="key-pill">1-9</span> Build</span>
+    <!-- Keyboard Hotkey Overlay Hint (Collapsible Bottom Status Strip) -->
+    <div id="controls-hint-panel" class="controls-hint-panel" title="Click to collapse / expand shortcuts">
+        <span class="controls-legend-tag">[?] CONTROLS</span>
+        <div class="controls-keys-list">
+            <span><span class="key-pill">WASD</span> Pan</span>
+            <span><span class="key-pill">RMB</span> Orbit</span>
+            <span><span class="key-pill">Scroll</span> Zoom</span>
+            <span><span class="key-pill">R</span> Rotate</span>
+            <span><span class="key-pill">Q</span> Pipet</span>
+            <span><span class="key-pill">H</span> HUD</span>
+            <span><span class="key-pill">1-9</span> Build</span>
+        </div>
     </div>
 
     <!-- Glass Dock Navigation (Hotbar Melayang) -->
@@ -343,6 +361,6 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Application Script Entry Point -->
-    <script type="module" src="js/main.js?v=11"></script>
+    <script type="module" src="js/main.js?v=30"></script>
 </body>
 </html>

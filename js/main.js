@@ -3,12 +3,12 @@
  * Nexus Automata (Three.js 3D Engine)
  */
 
-import { WorldGrid } from './grid.js?v=11';
-import { SimulationEngine } from './simulation.js?v=11';
-import { Renderer3D } from './renderer3d.js?v=11';
-import { UIController } from './ui.js?v=11';
-import { DIRECTIONS, BUILDINGS, TECH_TREE } from './data.js?v=11';
-import { sound } from './audio.js?v=11';
+import { WorldGrid } from './grid.js?v=30';
+import { SimulationEngine } from './simulation.js?v=30';
+import { Renderer3D } from './renderer3d.js?v=30';
+import { UIController } from './ui.js?v=30';
+import { DIRECTIONS, BUILDINGS, TECH_TREE } from './data.js?v=30';
+import { sound } from './audio.js?v=30';
 
 class GameApp {
     constructor() {
@@ -472,6 +472,25 @@ class GameApp {
                 sound.playClick();
                 this.ui.openModal('tech-modal');
                 this.ui.renderTechTree();
+            }
+
+            // H: Toggle Minimal HUD
+            if (e.key.toLowerCase() === 'h') {
+                this.ui.toggleMinimalHUD();
+            }
+
+            // Tab: Cycle Category Tabs
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const categories = ['logistics', 'production', 'power', 'special', 'tools'];
+                let curIdx = categories.indexOf(this.ui.selectedCategory);
+                curIdx = (curIdx + 1) % categories.length;
+                this.ui.selectedCategory = categories[curIdx];
+                document.querySelectorAll('.dock-pill-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.category === this.ui.selectedCategory);
+                });
+                this.ui.renderDock();
+                sound.playClick();
             }
 
             // Space: Pause simulation

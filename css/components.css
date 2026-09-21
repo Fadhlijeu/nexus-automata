@@ -1,26 +1,20 @@
 /**
- * Glass Dark Premium — Component Styles
- * Adapted from prototype UI components:
- * - glass-dock-navigation
- * - modal-dialog-glass
- * - toast-notification-glass
- * - progress-bar-glass
- * - aurora-storage-card & stat-trend-card
- * - button-glass & tooltip-glass
+ * Industrial CAD & Tactical Simulation Components
+ * Nexus Automata — Precision Engineering Factory HUD
  */
 
 /* ==========================================================================
-   1. Glass Dock Navigation (Hotbar Bangunan Melayang)
+   1. Bottom Industrial Factory Dock / Hotbar
    ========================================================================== */
 .glass-dock-container {
     position: fixed;
-    bottom: 20px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 0;
     z-index: 100;
     pointer-events: none;
     max-width: 95vw;
@@ -28,166 +22,418 @@
 
 .dock-category-pills {
     display: flex;
-    gap: 6px;
-    background: rgba(16, 16, 24, 0.75);
-    padding: 4px 6px;
-    border-radius: var(--radius-full);
-    backdrop-filter: var(--blur-glass-standard);
-    -webkit-backdrop-filter: var(--blur-glass-standard);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    gap: 2px;
+    background: #0B0E14;
+    padding: 3px 6px 0 6px;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #1E2633;
+    border-bottom: none;
     pointer-events: auto;
 }
 
 .dock-pill-btn {
     background: transparent;
     border: none;
-    color: var(--text-secondary);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    padding: 6px 14px;
-    border-radius: var(--radius-full);
+    border-bottom: 2px solid transparent;
+    color: #94A3B8;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    padding: 5px 12px;
     cursor: pointer;
-    transition: all 0.2s var(--ease-standard);
+    transition: all 0.15s var(--ease-standard);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    text-transform: uppercase;
 }
 
 .dock-pill-btn:hover {
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.06);
+    color: #F8FAFC;
+    background: #141A24;
 }
 
 .dock-pill-btn.active {
-    background: var(--glass-active);
+    background: #121824;
     color: var(--accent-cyan);
-    border: 1px solid var(--glass-border-accent);
-    box-shadow: 0 0 16px rgba(34, 211, 238, 0.25);
+    border-bottom-color: var(--accent-cyan);
 }
 
 .glass-dock {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: var(--radius-xl);
-    background: var(--glass-panel);
-    backdrop-filter: var(--blur-glass-heavy);
-    -webkit-backdrop-filter: var(--blur-glass-heavy);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: var(--shadow-glass-elevated);
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: 4px 4px 0 0;
+    background: #0D1118;
+    border: 1px solid #1E2633;
+    border-bottom: none;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.65);
     pointer-events: auto;
-    transition: transform 0.25s var(--ease-spring);
 }
 
 .dock-slot {
     position: relative;
-    width: 54px;
-    height: 54px;
-    border-radius: var(--radius-md);
-    background: var(--glass-card);
-    border: 1px solid var(--glass-border-bottom);
-    border-top-color: var(--glass-border-side);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-xs);
+    background: #141A24;
+    border: 1px solid #222C3A;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s var(--ease-spring);
-    user-select: none;
-    color: var(--text-primary);
+    transition: all 0.15s ease;
+    color: #CBD5E1;
 }
 
 .dock-slot:hover {
-    background: var(--glass-card-hover);
-    transform: translateY(-4px) scale(1.05);
-    border-color: var(--glass-border-top);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 14px rgba(74, 158, 255, 0.2);
+    background: #1B2332;
+    border-color: #38BDF8;
+    color: #FFFFFF;
 }
 
 .dock-slot.active {
-    background: rgba(34, 211, 238, 0.15);
+    background: #162638;
     border-color: var(--accent-cyan);
-    transform: translateY(-6px) scale(1.08);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4), inset 0 0 8px rgba(56, 189, 248, 0.2);
+    color: #FFFFFF;
 }
 
 .dock-slot.locked {
     opacity: 0.35;
     cursor: not-allowed;
-    filter: grayscale(0.8);
+    filter: grayscale(1);
 }
 
-.dock-slot.locked:hover {
-    transform: none;
-    box-shadow: none;
-    background: var(--glass-card);
+.slot-key {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: #64748B;
 }
 
-.dock-slot .slot-icon {
-    width: 28px;
-    height: 28px;
+.dock-slot.active .slot-key {
+    color: var(--accent-cyan);
+}
+
+.slot-icon {
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.dock-slot .slot-icon svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+.slot-icon svg {
+    width: 22px;
+    height: 22px;
 }
 
-.dock-slot .slot-key {
+/* Precision Industrial Tooltip (Hover above hotbar) */
+.slot-tooltip {
     position: absolute;
-    top: 3px;
-    left: 5px;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #0B0E14;
+    border: 1px solid #293548;
+    border-radius: var(--radius-xs);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+    padding: 7px 11px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.12s ease, transform 0.12s ease;
+    white-space: nowrap;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: left;
+}
+
+.dock-slot:hover .slot-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.tooltip-name {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: #F8FAFC;
+    letter-spacing: 0.3px;
+}
+
+.tooltip-key {
     font-size: 9px;
     font-family: var(--font-mono);
-    color: var(--text-dim);
-    font-weight: 600;
+    color: var(--accent-cyan);
+    font-weight: 700;
 }
 
-.dock-slot .slot-name {
-    position: absolute;
-    bottom: 2px;
+.tooltip-desc {
+    font-size: 10px;
+    color: #94A3B8;
+    max-width: 280px;
+    white-space: normal;
+    line-height: 1.35;
+}
+
+.tooltip-cost {
     font-size: 9px;
-    font-family: var(--font-sans);
-    color: var(--text-muted);
-    letter-spacing: -0.2px;
-    max-width: 50px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.dock-divider {
-    width: 1px;
-    height: 38px;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 0 2px;
+    font-family: var(--font-mono);
+    color: #F59E0B;
+    font-weight: 600;
+    margin-top: 2px;
 }
 
 /* ==========================================================================
-   2. Modal Dialog Glass (Inspector, Tech Tree, Telemetry, Settings)
+   2. Top Industrial CAD Telemetry Bar (Header)
+   ========================================================================== */
+.top-hud-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 42px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0B0E14;
+    border-bottom: 1px solid #1C2432;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+    z-index: 100;
+    pointer-events: auto;
+}
+
+.hud-left-group, .hud-center-group, .hud-right-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hud-glass-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-xs);
+    background: #111620;
+    border: 1px solid #202A38;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+}
+
+.hud-glass-badge .badge-value {
+    font-weight: 700;
+    color: var(--accent-cyan);
+}
+
+.hud-glass-badge.energy .badge-value {
+    color: var(--accent-amber);
+}
+
+.hud-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-xs);
+    background: #111620;
+    border: 1px solid #202A38;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.hud-btn:hover {
+    background: #182230;
+    border-color: #38BDF8;
+    color: #FFFFFF;
+}
+
+.hud-btn.active {
+    background: #162638;
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.hud-speed-group {
+    display: flex;
+    gap: 2px;
+    background: #111620;
+    padding: 2px;
+    border-radius: var(--radius-xs);
+    border: 1px solid #202A38;
+}
+
+.speed-btn {
+    padding: 3px 8px !important;
+    font-size: 9px !important;
+    border-radius: 2px !important;
+}
+
+/* ==========================================================================
+   3. Bottom-Right Controls Hint Panel (Docked Minimalist Status Strip)
+   ========================================================================== */
+.controls-hint-panel {
+    position: fixed;
+    bottom: 0;
+    right: 14px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0B0E14;
+    border: 1px solid #1E2736;
+    border-bottom: none;
+    padding: 0 10px;
+    border-radius: 4px 4px 0 0;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: #64748B;
+    z-index: 90;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.controls-hint-panel:hover {
+    background: #121822;
+    border-color: #2D3B4E;
+}
+
+.controls-legend-tag {
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 0.5px;
+}
+
+.controls-keys-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.controls-hint-panel.collapsed .controls-keys-list {
+    display: none;
+}
+
+.key-pill {
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: 2px;
+    background: #1E2738;
+    border: 1px solid #2E3B50;
+    color: #CBD5E1;
+    font-weight: 700;
+}
+
+/* Minimap Radar Collapsed State */
+.minimap-glass.collapsed {
+    height: 28px !important;
+    width: 120px !important;
+}
+
+.minimap-glass.collapsed #minimap-canvas {
+    display: none !important;
+}
+
+.minimap-toggle-btn {
+    background: #1A2230;
+    border: 1px solid #2B384E;
+    color: #94A3B8;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 0 5px;
+    border-radius: 2px;
+    cursor: pointer;
+    line-height: 14px;
+    height: 16px;
+}
+
+.minimap-toggle-btn:hover {
+    background: #243248;
+    color: #FFFFFF;
+    border-color: #38BDF8;
+}
+
+/* Minimal HUD Toggle Mode (H) */
+body.minimal-hud .top-hud-bar,
+body.minimal-hud .glass-dock-container,
+body.minimal-hud .minimap-glass,
+body.minimal-hud .controls-hint-panel {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(-20px) !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+body.minimal-hud .glass-dock-container,
+body.minimal-hud .controls-hint-panel {
+    transform: translateX(-50%) translateY(30px) !important;
+}
+
+body.minimal-hud #hud-restore-pill {
+    display: flex !important;
+}
+
+.hud-restore-pill {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 14, 20, 0.85);
+    border: 1px solid #243042;
+    border-radius: 3px;
+    padding: 4px 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: #94A3B8;
+    cursor: pointer;
+    z-index: 1000;
+    letter-spacing: 0.5px;
+    transition: all 0.15s ease;
+}
+
+.hud-restore-pill:hover {
+    background: #141A24;
+    border-color: #38BDF8;
+    color: #FFFFFF;
+}
+
+/* ==========================================================================
+   4. Industrial Modal Dialogs (Inspector, Tech Tree, Telemetry, Settings)
    ========================================================================== */
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(4, 4, 8, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(4, 6, 10, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 200;
+    z-index: 250;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s var(--ease-standard);
+    transition: opacity 0.15s ease;
 }
 
 .modal-backdrop.open {
@@ -200,715 +446,207 @@
     width: 90%;
     max-width: 680px;
     max-height: 88vh;
-    border-radius: var(--radius-xl);
-    background: var(--glass-panel);
-    backdrop-filter: var(--blur-glass-heavy);
-    -webkit-backdrop-filter: var(--blur-glass-heavy);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: var(--shadow-glass-elevated);
+    border-radius: var(--radius-sm);
+    background: #0E131A;
+    border: 1px solid #222C3C;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transform: scale(0.94) translateY(12px);
-    transition: transform 0.28s var(--ease-spring);
+    animation: modalPop 0.18s ease;
 }
 
-.modal-backdrop.open .modal-card {
-    transform: scale(1) translateY(0);
+@keyframes modalPop {
+    from { transform: scale(0.97); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: relative;
+    padding: 12px 16px;
+    background: #121822;
+    border-bottom: 1px solid #1E2736;
 }
 
 .modal-title-group {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .modal-icon-badge {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    background: var(--glass-card-hover);
-    border: 1px solid var(--glass-border-top);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent-cyan);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-xs);
+    background: #16202E;
+    border: 1px solid #243248;
 }
 
 .modal-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: #F8FAFC;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
 }
 
 .modal-subtitle {
-    font-size: 12px;
-    color: var(--text-secondary);
+    font-size: 11px;
+    color: #64748B;
 }
 
 .modal-close-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-sm);
-    background: var(--glass-card);
-    border: 1px solid var(--glass-border-side);
-    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-xs);
+    background: #16202E;
+    border: 1px solid #243248;
+    color: #94A3B8;
+    font-size: 16px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s var(--ease-standard);
+    transition: all 0.12s;
 }
 
 .modal-close-btn:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: var(--accent-red);
-    color: var(--accent-red);
+    background: #EF4444;
+    color: #FFFFFF;
+    border-color: #EF4444;
 }
 
 .modal-body {
-    padding: 20px 24px;
+    padding: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(74, 158, 255, 0.3) transparent;
-}
-
-.modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(10, 10, 16, 0.4);
-}
-
-/* ==========================================================================
-   3. Buttons & Actions (Button Glass)
-   ========================================================================== */
-.btn-glass {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 18px;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s var(--ease-spring);
-    border: 1px solid transparent;
-    user-select: none;
-}
-
-.btn-glass:hover {
-    transform: translateY(-2px);
-}
-
-.btn-glass:active {
-    transform: translateY(0);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, rgba(74, 158, 255, 0.8), rgba(34, 211, 238, 0.8));
-    color: #FFFFFF;
-    border-top-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.35);
-}
-
-.btn-primary:hover {
-    box-shadow: 0 6px 22px rgba(74, 158, 255, 0.5);
-    filter: brightness(1.1);
-}
-
-.btn-secondary {
-    background: var(--glass-card);
-    color: var(--text-primary);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-}
-
-.btn-secondary:hover {
-    background: var(--glass-card-hover);
-    border-color: var(--glass-border-top);
-}
-
-.btn-danger {
-    background: rgba(239, 68, 68, 0.15);
-    color: #FCA5A5;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-top-color: rgba(239, 68, 68, 0.6);
-}
-
-.btn-danger:hover {
-    background: rgba(239, 68, 68, 0.3);
-    color: #FFFFFF;
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
-}
-
-/* ==========================================================================
-   4. Aurora Progress Bar (Progress Bar Glass)
-   ========================================================================== */
-.glass-progress-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-}
-
-.glass-progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    font-family: var(--font-sans);
-    color: var(--text-secondary);
-}
-
-.glass-progress-track {
-    position: relative;
-    width: 100%;
-    height: 8px;
-    border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    overflow: hidden;
-}
-
-.glass-progress-fill {
-    height: 100%;
-    border-radius: var(--radius-full);
-    background: linear-gradient(90deg, #22D3EE, #4A9EFF, #A855F7);
-    box-shadow: 0 0 12px rgba(34, 211, 238, 0.5);
-    transition: width 0.15s ease-out;
-}
-
-/* ==========================================================================
-   5. Toast Notification Glass Stack
-   ========================================================================== */
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 300;
-    pointer-events: none;
-    max-width: 360px;
-}
-
-.glass-toast {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 18px;
-    border-radius: var(--radius-lg);
-    background: rgba(18, 20, 30, 0.85);
-    backdrop-filter: var(--blur-glass-heavy);
-    -webkit-backdrop-filter: var(--blur-glass-heavy);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: var(--shadow-glass-elevated);
-    pointer-events: auto;
-    animation: toastSlideIn 0.3s var(--ease-spring);
-    transition: all 0.3s var(--ease-standard);
-}
-
-.glass-toast.removing {
-    opacity: 0;
-    transform: translateX(40px);
-}
-
-@keyframes toastSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-16px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.toast-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.toast-icon.info {
-    background: rgba(34, 211, 238, 0.15);
-    color: var(--accent-cyan);
-}
-
-.toast-icon.success {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--accent-green);
-}
-
-.toast-icon.warning {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--accent-amber);
-}
-
-.toast-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.toast-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.toast-msg {
-    font-size: 11px;
-    color: var(--text-secondary);
-}
-
-/* ==========================================================================
-   6. HUD Telemetry Bar (Top Bar Glass)
-   ========================================================================== */
-.top-hud-bar {
-    position: fixed;
-    top: 16px;
-    left: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    pointer-events: none;
-    z-index: 100;
-}
-
-.hud-left-group, .hud-center-group, .hud-right-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    pointer-events: auto;
-}
-
-.hud-glass-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: var(--radius-full);
-    background: var(--glass-panel);
-    backdrop-filter: var(--blur-glass-standard);
-    -webkit-backdrop-filter: var(--blur-glass-standard);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    font-size: 12px;
-    font-family: var(--font-sans);
-    color: var(--text-primary);
-}
-
-.hud-glass-badge .badge-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hud-glass-badge .badge-value {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    color: var(--accent-cyan);
-}
-
-.hud-glass-badge.energy .badge-value {
-    color: var(--accent-amber);
-}
-
-.hud-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    background: var(--glass-panel);
-    backdrop-filter: var(--blur-glass-standard);
-    -webkit-backdrop-filter: var(--blur-glass-standard);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-    transition: all 0.2s var(--ease-spring);
-}
-
-.hud-btn:hover {
-    background: var(--glass-card-hover);
-    border-color: var(--glass-border-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 0 16px rgba(74, 158, 255, 0.3);
-}
-
-.hud-btn.active {
-    background: rgba(74, 158, 255, 0.2);
-    border-color: var(--accent-cyan);
-    color: var(--accent-cyan);
-}
-
-/* ==========================================================================
-   7. Item Inventory / Recipe Grids inside Inspector
-   ========================================================================== */
-.inspector-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
+    gap: 14px;
+    background: #0E131A;
 }
 
 .inspector-card {
-    background: var(--glass-card);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    border-radius: var(--radius-md);
+    background: #121822;
+    border: 1px solid #1F2A3A;
+    border-radius: var(--radius-xs);
     padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-}
-
-.inspector-card .card-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.inspector-card .card-val {
-    font-size: 15px;
-    font-family: var(--font-mono);
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.item-slot-display {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: var(--radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.item-slot-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.item-slot-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.item-slot-name {
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.item-slot-count {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--accent-cyan);
-}
-
-/* ==========================================================================
-   8. Tech Tree Nodes in Modal
-   ========================================================================== */
-.tech-tree-container {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.tech-node-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    border-radius: var(--radius-md);
-    background: var(--glass-card);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    transition: all 0.2s var(--ease-spring);
-    cursor: pointer;
-}
-
-.tech-node-card:hover {
-    background: var(--glass-card-hover);
-    transform: translateX(4px);
-    border-color: var(--glass-border-accent);
-}
-
-.tech-node-card.unlocked {
-    border-color: rgba(16, 185, 129, 0.4);
-    background: rgba(16, 185, 129, 0.06);
-}
-
-.tech-node-card.researching {
-    border-color: rgba(34, 211, 238, 0.5);
-    background: rgba(34, 211, 238, 0.08);
-    box-shadow: 0 0 16px rgba(34, 211, 238, 0.2);
-}
-
-.tech-node-card.locked {
-    opacity: 0.45;
-    cursor: not-allowed;
-}
-
-.tech-info {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.tech-icon-box {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border-side);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-}
-
-.tech-texts {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.tech-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.tech-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.tech-cost-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.06);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--accent-cyan);
-}
-
-/* ==========================================================================
-   9. Controls & Hotkey Overlay Panel
-   ========================================================================== */
-.controls-hint-panel {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
     gap: 8px;
-    padding: 8px 14px;
-    border-radius: var(--radius-full);
-    background: var(--glass-panel);
-    backdrop-filter: var(--blur-glass-light);
-    -webkit-backdrop-filter: var(--blur-glass-light);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-    font-size: 11px;
+}
+
+.card-label {
+    font-size: 10px;
     font-family: var(--font-mono);
-    color: var(--text-muted);
-    z-index: 90;
-    pointer-events: none;
+    font-weight: 700;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
 }
 
-.key-pill {
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    font-weight: 600;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-}
-
-/* ==========================================================================
-   10. 3D World-Space Hover Diagnostics Badge
-   ========================================================================== */
-.world-hover-badge {
-    position: fixed;
-    transform: translate(-50%, -125%);
-    padding: 6px 14px;
-    border-radius: var(--radius-sm);
-    background: rgba(10, 14, 24, 0.92);
-    backdrop-filter: var(--blur-glass-standard);
-    -webkit-backdrop-filter: var(--blur-glass-standard);
-    border: 1px solid var(--glass-border-side);
-    border-top-color: var(--glass-border-top);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75), 0 0 16px rgba(56, 189, 248, 0.35);
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    pointer-events: none;
-    z-index: 150;
-    white-space: nowrap;
-}
-
-/* ==========================================================================
-   11. Factory Analytics & Telemetry Dashboard
-   ========================================================================== */
+/* Telemetry Dashboard Card */
 .telemetry-card {
-    background: rgba(15, 23, 42, 0.65);
-    border: 1px solid var(--glass-border-side);
-    border-top: 1px solid var(--glass-border-top);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
+    background: #121822;
+    border: 1px solid #1F2A3A;
+    border-radius: var(--radius-xs);
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
 .telemetry-label {
-    font-size: 10px;
+    font-size: 9px;
+    font-family: var(--font-mono);
     font-weight: 700;
+    color: #64748B;
     letter-spacing: 0.8px;
-    color: var(--text-muted);
 }
 
 .telemetry-val {
+    font-size: 16px;
     font-family: var(--font-mono);
-    font-size: 18px;
     font-weight: 700;
 }
 
-.chart-card {
-    background: rgba(10, 15, 26, 0.75);
-    border: 1px solid var(--glass-border-side);
-    border-top: 1px solid var(--glass-border-top);
-    border-radius: var(--radius-lg);
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* ==========================================================================
-   12. Overclocking Slider & Preset Badges
-   ========================================================================== */
-.overclock-container {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(245, 158, 11, 0.25);
-    border-radius: var(--radius-md);
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.overclock-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.overclock-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.12);
-    outline: none;
-    cursor: pointer;
-}
-
-.overclock-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #F59E0B;
-    border: 2px solid #FFFFFF;
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
-    cursor: pointer;
-    transition: transform 0.15s ease;
-}
-
-.overclock-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-
-.overclock-presets {
-    display: flex;
-    gap: 6px;
-}
-
-.overclock-preset-btn {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border-side);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
+/* Industrial Buttons */
+.btn-glass {
+    padding: 8px 14px;
+    border-radius: var(--radius-xs);
     font-family: var(--font-mono);
     font-size: 11px;
-    padding: 5px 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-}
-
-.overclock-preset-btn:hover {
-    background: rgba(245, 158, 11, 0.15);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #F59E0B;
-}
-
-.overclock-preset-btn.active {
-    background: rgba(245, 158, 11, 0.25);
-    border-color: #F59E0B;
-    color: #F59E0B;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background: #0284C7;
+    color: #FFFFFF;
+    border-color: #38BDF8;
+}
+
+.btn-primary:hover {
+    background: #0369A1;
+}
+
+.btn-secondary {
+    background: #16202E;
+    color: #CBD5E1;
+    border-color: #243248;
+}
+
+.btn-secondary:hover {
+    background: #1C2B3E;
+    color: #FFFFFF;
+}
+
+.btn-danger {
+    background: #991B1B;
+    color: #FFFFFF;
+    border-color: #EF4444;
+}
+
+.btn-danger:hover {
+    background: #7F1D1D;
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 50px;
+    right: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 300;
+    pointer-events: none;
+}
+
+.toast-card {
+    background: #111620;
+    border: 1px solid #202A38;
+    border-left: 3px solid var(--accent-cyan);
+    padding: 8px 12px;
+    border-radius: var(--radius-xs);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+    font-size: 11px;
+    font-family: var(--font-sans);
+    color: #F8FAFC;
+    pointer-events: auto;
+    animation: toastSlide 0.2s ease;
+}
+
+@keyframes toastSlide {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }

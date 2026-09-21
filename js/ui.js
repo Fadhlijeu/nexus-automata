@@ -167,6 +167,45 @@ export class UIController {
                 this.renderMilestones();
             });
         }
+
+        // HUD Toggle Button & Restore Pill
+        const hudToggleBtn = document.getElementById('hud-toggle-btn');
+        if (hudToggleBtn) {
+            hudToggleBtn.addEventListener('click', () => this.toggleMinimalHUD());
+        }
+
+        const hudRestorePill = document.getElementById('hud-restore-pill');
+        if (hudRestorePill) {
+            hudRestorePill.addEventListener('click', () => this.toggleMinimalHUD());
+        }
+
+        // Minimap Radar Collapse / Expand Toggle
+        const minimapToggleBtn = document.getElementById('minimap-toggle-btn');
+        if (minimapToggleBtn) {
+            minimapToggleBtn.addEventListener('click', () => {
+                sound.playClick();
+                const minimap = document.querySelector('.minimap-glass');
+                if (minimap) {
+                    minimap.classList.toggle('collapsed');
+                    minimapToggleBtn.textContent = minimap.classList.contains('collapsed') ? '+' : '_';
+                }
+            });
+        }
+
+        // Controls Hint Panel Collapse Toggle
+        const controlsHint = document.getElementById('controls-hint-panel');
+        if (controlsHint) {
+            controlsHint.addEventListener('click', () => {
+                controlsHint.classList.toggle('collapsed');
+            });
+        }
+    }
+
+    toggleMinimalHUD() {
+        sound.playClick();
+        document.body.classList.toggle('minimal-hud');
+        const isHidden = document.body.classList.contains('minimal-hud');
+        this.showToast('HUD Display', isHidden ? 'HUD Hidden (Press H to restore)' : 'HUD Restored', 'info');
     }
 
     renderDock() {
@@ -184,10 +223,23 @@ export class UIController {
             slot.dataset.tool = b.id;
 
             const keyNumber = index + 1;
+            const costStr = b.cost 
+                ? Object.entries(b.cost).map(([k, v]) => `${v}× ${k.replace(/_/g, ' ')}`).join(', ') 
+                : 'Free';
+            const powerMeta = b.powerNeed ? `• Power: ${b.powerNeed} kW` : (b.powerGen ? `• Gen: +${b.powerGen} kW` : '');
+            const speedMeta = b.speed ? `• Speed: ${b.speed} tiles/s` : '';
+
             slot.innerHTML = `
                 <span class="slot-key">${keyNumber <= 9 ? keyNumber : ''}</span>
                 <div class="slot-icon">${this.getBuildingIconSVG(b.id)}</div>
-                <span class="slot-name">${b.name}</span>
+                <div class="slot-tooltip">
+                    <div class="tooltip-header">
+                        <span class="tooltip-name">${b.name}</span>
+                        <span class="tooltip-key">[${keyNumber <= 9 ? keyNumber : ''}]</span>
+                    </div>
+                    <div class="tooltip-desc">${b.description || ''}</div>
+                    <div class="tooltip-cost">Cost: ${costStr} ${powerMeta} ${speedMeta}</div>
+                </div>
             `;
 
             slot.addEventListener('click', () => {
