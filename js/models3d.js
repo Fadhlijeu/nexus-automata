@@ -586,40 +586,144 @@ export class ModelFactory3D {
         const group = new THREE.Group();
         const size = this.tileSize * 3;
 
+        // Base Heavy Reinforced Foundation
         const base = new THREE.Mesh(
-            new THREE.BoxGeometry(size * 0.9, 0.6, size * 0.9),
+            new THREE.BoxGeometry(size * 0.92, 0.65, size * 0.92),
             this.materials.darkSteel
         );
-        base.position.y = 0.3;
+        base.position.y = 0.325;
         base.castShadow = true;
+        base.receiveShadow = true;
         group.add(base);
 
-        // 4 Buttress Towers
-        const towerGeom = new THREE.CylinderGeometry(0.35, 0.7, 4.5, 8);
+        // Caution Perimeter Striping
+        const perimeterStripe = new THREE.Mesh(
+            new THREE.BoxGeometry(size * 0.94, 0.12, size * 0.94),
+            this.materials.hazardStripe
+        );
+        perimeterStripe.position.y = 0.65;
+        group.add(perimeterStripe);
+
+        // 4 Buttress Towers with Structural Truss Crossbars
+        const towerGeom = new THREE.CylinderGeometry(0.38, 0.75, 4.8, 8);
         for (let x of [-size * 0.35, size * 0.35]) {
             for (let z of [-size * 0.35, size * 0.35]) {
                 const tower = new THREE.Mesh(towerGeom, this.materials.lightSteel);
-                tower.position.set(x, 2.55, z);
+                tower.position.set(x, 2.7, z);
                 tower.castShadow = true;
                 group.add(tower);
+
+                // Red Aviation Warning Beacon on each tower summit
+                const beacon = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.14, 8, 8),
+                    new THREE.MeshStandardMaterial({
+                        color: 0xEF4444,
+                        emissive: 0xEF4444,
+                        emissiveIntensity: 2.0
+                    })
+                );
+                beacon.position.set(x, 5.2, z);
+                group.add(beacon);
             }
         }
 
+        // Structural Girders between towers
+        const girderX = new THREE.Mesh(new THREE.BoxGeometry(size * 0.7, 0.16, 0.2), this.materials.darkSteel);
+        girderX.position.set(0, 3.8, size * 0.35);
+        group.add(girderX);
+        const girderX2 = girderX.clone();
+        girderX2.position.set(0, 3.8, -size * 0.35);
+        group.add(girderX2);
+
+        const girderZ = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.16, size * 0.7), this.materials.darkSteel);
+        girderZ.position.set(size * 0.35, 3.8, 0);
+        group.add(girderZ);
+        const girderZ2 = girderZ.clone();
+        girderZ2.position.set(-size * 0.35, 3.8, 0);
+        group.add(girderZ2);
+
+        // Magnetic Accelerator Ring
         const ring = new THREE.Mesh(
-            new THREE.TorusGeometry(size * 0.35, 0.2, 8, 24),
+            new THREE.TorusGeometry(size * 0.35, 0.22, 10, 28),
             this.materials.brightCyan
         );
         ring.rotateX(Math.PI / 2);
-        ring.position.y = 4.2;
+        ring.position.y = 4.6;
         group.add(ring);
 
+        // Hyper-Structure Orbital Carbon Nanotube Tether Beam
         const tether = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.12, 0.12, 120, 8),
+            new THREE.CylinderGeometry(0.14, 0.14, 200, 8),
             this.materials.brightCyan
         );
-        tether.position.y = 60;
+        tether.position.y = 100;
         group.add(tether);
 
+        // Docked Orbital Transport Pod
+        const pod = new THREE.Group();
+        pod.name = 'orbitalPod';
+        pod.position.set(0, 4.8, 0);
+
+        // Pod Main Fuselage
+        const podBody = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.65, 0.85, 2.0, 12),
+            this.materials.plasticWhite
+        );
+        podBody.castShadow = true;
+        pod.add(podBody);
+
+        // Aerodynamic Nosecone
+        const podNose = new THREE.Mesh(
+            new THREE.ConeGeometry(0.65, 0.9, 12),
+            this.materials.darkSteel
+        );
+        podNose.position.y = 1.45;
+        pod.add(podNose);
+
+        // Cockpit / Sensor Array Visor
+        const visor = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, 0.25, 0.8),
+            this.materials.brightCyan
+        );
+        visor.position.set(0, 0.5, 0.4);
+        pod.add(visor);
+
+        // 4 Cargo Stabilizer Fins
+        for (let i = 0; i < 4; i++) {
+            const fin = new THREE.Mesh(
+                new THREE.BoxGeometry(0.08, 0.8, 0.4),
+                this.materials.industrialYellow
+            );
+            fin.rotation.y = (i * Math.PI) / 2;
+            fin.position.set(Math.sin((i * Math.PI) / 2) * 0.95, -0.4, Math.cos((i * Math.PI) / 2) * 0.95);
+            pod.add(fin);
+        }
+
+        // Ion Propulsion Engine Bell & Plume
+        const engineBell = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.5, 0.35, 0.35, 10),
+            this.materials.darkSteel
+        );
+        engineBell.position.y = -1.15;
+        pod.add(engineBell);
+
+        const enginePlume = new THREE.Mesh(
+            new THREE.ConeGeometry(0.45, 1.6, 8),
+            new THREE.MeshStandardMaterial({
+                color: 0x38BDF8,
+                emissive: 0x0EA5E9,
+                emissiveIntensity: 2.8,
+                transparent: true,
+                opacity: 0.85
+            })
+        );
+        enginePlume.name = 'enginePlume';
+        enginePlume.rotation.x = Math.PI;
+        enginePlume.position.y = -1.95;
+        enginePlume.visible = false;
+        pod.add(enginePlume);
+
+        group.add(pod);
         return group;
     }
 

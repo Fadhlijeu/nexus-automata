@@ -20,7 +20,8 @@ export class Renderer3D {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
-            powerPreference: 'high-performance'
+            powerPreference: 'high-performance',
+            preserveDrawingBuffer: true
         });
 
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -107,6 +108,7 @@ export class Renderer3D {
         // 9. Floating 3D Hover Badge in DOM
         this.hoverBadge = document.getElementById('world-hover-badge');
         this.lastHoveredBuilding = null;
+        this.elevatorLaunchState = null;
 
         window.addEventListener('resize', () => this.onResize());
     }
@@ -152,7 +154,8 @@ export class Renderer3D {
         );
 
         this.ghostGroup.rotation.y = -direction * (Math.PI / 2);
-        this.ghostBox.scale.set(size * ts * 0.94, 1, size * ts * 0.94);
+        this.ghostBox.scale.set(size * ts * 0.94, 0.35, size * ts * 0.94);
+        this.ghostPointer.position.set(0, 0.35, -size * ts * 0.42);
 
         const canPlace = this.grid.canPlace(type, x, y, direction);
         this.ghostBox.material = canPlace ? this.ghostMatValid : this.ghostMatInvalid;
@@ -360,6 +363,37 @@ export class Renderer3D {
                     const pz = b.y * ts + (b.size * ts) / 2;
                     this.emitSmoke(px + 0.9, 3.9, pz + 0.7, false);
                 }
+            } else if (b.type === 'space_elevator') {
+                const pod = mesh.getObjectByName('orbitalPod');
+                const plume = mesh.getObjectByName('enginePlume');
+                if (pod) {
+                    if (this.elevatorLaunchState && this.elevatorLaunchState.active) {
+                        this.elevatorLaunchState.progress += dt * 0.35;
+                        const p = this.elevatorLaunchState.progress;
+                        if (plume) {
+                            plume.visible = true;
+                            plume.scale.set(1 + Math.sin(p * 25) * 0.25, 1 + Math.random() * 0.4, 1 + Math.sin(p * 25) * 0.25);
+                        }
+                        // Ascend up towards orbit
+                        pod.position.y = 4.8 + Math.pow(p, 2.0) * 110;
+
+                        // Thruster plume smoke particles
+                        if (Math.random() < 0.65) {
+                            const px = b.x * ts + (b.size * ts) / 2;
+                            const pz = b.y * ts + (b.size * ts) / 2;
+                            this.emitSmoke(px + (Math.random() - 0.5) * 0.8, Math.max(0.5, pod.position.y - 1.8), pz + (Math.random() - 0.5) * 0.8, false);
+                        }
+
+                        if (p >= 1.0) {
+                            this.elevatorLaunchState = null;
+                            pod.position.y = 4.8;
+                            if (plume) plume.visible = false;
+                        }
+                    } else {
+                        pod.position.y = 4.8 + Math.sin(performance.now() * 0.0025) * 0.08;
+                        if (plume) plume.visible = false;
+                    }
+                }
             }
         });
 
@@ -464,5 +498,9 @@ export class Renderer3D {
 
         // 7. Render 3D Scene
         this.renderer.render(this.scene, this.camera);
+    }
+
+    triggerSpaceElevatorLaunch() {
+        this.elevatorLaunchState = { active: true, progress: 0 };
     }
 }

@@ -45,6 +45,21 @@ class GameApp {
         requestAnimationFrame((t) => this.loop(t));
     }
 
+    handleSimEvent(evt, data) {
+        if (evt === 'tech_unlocked') {
+            sound.playResearchUnlock();
+            this.ui.showToast('Research Complete', `Technology '${data.name}' researched! New production unlocked.`, 'success');
+            this.ui.renderDock();
+            this.ui.renderTechTree();
+        } else if (evt === 'milestone_complete') {
+            sound.playRocketLaunch();
+            this.ui.showToast('Orbital Milestone Achieved!', `Phase complete: ${data.title}! Cargo pod launched into orbit!`, 'success');
+            if (this.renderer && this.renderer.triggerSpaceElevatorLaunch) {
+                this.renderer.triggerSpaceElevatorLaunch();
+            }
+        }
+    }
+
     initStarterFactory() {
         if (this.grid.buildingList.length > 0) return;
 
@@ -582,22 +597,27 @@ class GameApp {
     }
 
     loop(timestamp) {
+        requestAnimationFrame((t) => this.loop(t));
+
         const dt = Math.min(0.1, (timestamp - this.lastTime) / 1000);
         this.lastTime = timestamp;
 
-        // Camera keyboard pan
-        this.updateCameraMovement(dt);
+        try {
+            // Camera keyboard pan
+            this.updateCameraMovement(dt);
 
-        // Discrete simulation tick
-        this.sim.update(dt);
+            // Discrete simulation tick
+            this.sim.update(dt);
 
-        // Three.js 3D Render
-        this.renderer.render(dt);
+            // Three.js 3D Render
+            this.renderer.render(dt);
 
-        // UI Telemetry
-        this.ui.updateHUD();
-
-        requestAnimationFrame((t) => this.loop(t));
+            // UI Telemetry
+            this.ui.updateHUD();
+        } catch (err) {
+            console.error("Critical error in GameApp loop:", err);
+            window.lastLoopError = err ? (err.message + "\n" + err.stack) : "Unknown error";
+        }
     }
 }
 

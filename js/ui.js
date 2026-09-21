@@ -846,10 +846,10 @@ export class UIController {
         });
 
         // Viewport camera rectangle
-        const camTileX = (this.renderer.camera.x / this.grid.tileSize);
-        const camTileY = (this.renderer.camera.y / this.grid.tileSize);
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1;
+        const camTileX = this.renderer.camTarget ? (this.renderer.camTarget.x / this.renderer.tileSize) : (this.grid.width / 2);
+        const camTileY = this.renderer.camTarget ? (this.renderer.camTarget.z / this.renderer.tileSize) : (this.grid.height / 2);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.lineWidth = 1.5;
         ctx.strokeRect((camTileX - 10) * scaleX, (camTileY - 8) * scaleY, 20 * scaleX, 16 * scaleY);
     }
 

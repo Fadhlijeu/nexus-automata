@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-09-21
+
+### Added
+- **Space Elevator Orbital Launch Cinematic**:
+  - Procedural 3D Orbital Transport Capsule pod docked at the elevator platform, complete with aerodynamic hull, stabilizer fins, cockpit sensor dome, and ion propulsion thruster.
+  - Dynamic launch ascent sequence upon milestone delivery completion: pod accelerates up the orbital tether beam into the stratosphere with glowing ion plume and exhaust smoke.
+  - Tower summit aviation warning beacons with pulsing red emissive illumination.
+- **Procedural Sound Engine Expansion**:
+  - Synthesized deep `playRocketLaunch()` audio sequence combining sub-bass sawtooth engine rumble with dynamically filtered aerodynamic white noise rush.
+- **Holographic Building Placement System**:
+  - Directional output indicators dynamically positioned according to machine footprint.
+  - Real-time validity tinting (emerald valid / crimson invalid) with snap-grid alignment.
+- **Simulation & Engine Orchestration**:
+  - Implemented `handleSimEvent()` to coordinate milestone launch events, research unlocks, and live toast notifications.
+  - Robust exception recovery in main 60 FPS animation loop.
+  - Added `preserveDrawingBuffer` to Three.js WebGL renderer for buffer persistence and canvas compositing.
+  - Fixed camera coordinate math on the 80x80 survey radar minimap.
+
+---
+
 ## [1.2.0] - 2026-09-21
 
 ### Added

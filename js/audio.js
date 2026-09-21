@@ -229,6 +229,54 @@ class SoundEngine {
         osc.stop(now + 0.08);
     }
 
+    playRocketLaunch() {
+        if (this.isMuted || !this.ctx) return;
+        this.resume();
+        const now = this.ctx.currentTime;
+
+        // Low frequency thruster rumble
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(65, now);
+        osc.frequency.linearRampToValueAtTime(130, now + 1.2);
+        osc.frequency.exponentialRampToValueAtTime(32, now + 2.8);
+
+        gain.gain.setValueAtTime(this.volume * 0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
+
+        // White noise whoosh
+        const bufferSize = Math.floor(this.ctx.sampleRate * 2.2);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(200, now);
+        filter.frequency.exponentialRampToValueAtTime(1800, now + 1.5);
+        filter.Q.value = 2.5;
+
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(this.volume * 0.45, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 2.8);
+        noise.start(now);
+        noise.stop(now + 2.2);
+    }
+
     toggleMute() {
         this.isMuted = !this.isMuted;
         return this.isMuted;
